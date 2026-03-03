@@ -1,3 +1,705 @@
-<!-- Mockup file too large for direct API upload. Use the files sent via Telegram or clone the repo locally. -->
-<meta http-equiv="refresh" content="0; url=https://onestepat4time.github.io/lolstonks-mockups/hextech.html">
-<p>Redirecting...</p>
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoLStonks — Hextech Interface</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            hextech: {
+              DEFAULT: '#0AC8B9',
+              light: '#5DFFF4',
+              dark: '#067A71',
+              glow: 'rgba(10, 200, 185, 0.5)',
+            },
+            void: {
+              DEFAULT: '#0a0e17',
+              light: '#111827',
+              medium: '#1a1f2e',
+            },
+            pulse: {
+              DEFAULT: '#00FF88',
+              glow: 'rgba(0, 255, 136, 0.4)',
+            },
+            plasma: {
+              DEFAULT: '#8B5CF6',
+              glow: 'rgba(139, 92, 246, 0.4)',
+            },
+          },
+          fontFamily: {
+            display: ['Orbitron', 'sans-serif'],
+            sans: ['Rajdhani', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          animation: {
+            'glow-pulse': 'glowPulse 2s ease-in-out infinite',
+            'scan-line': 'scanLine 4s linear infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'data-stream': 'dataStream 20s linear infinite',
+            'flicker': 'flicker 0.15s infinite',
+          },
+          keyframes: {
+            glowPulse: {
+              '0%, 100%': { boxShadow: '0 0 20px rgba(10, 200, 185, 0.3), inset 0 0 20px rgba(10, 200, 185, 0.1)' },
+              '50%': { boxShadow: '0 0 40px rgba(10, 200, 185, 0.5), inset 0 0 30px rgba(10, 200, 185, 0.2)' },
+            },
+            scanLine: {
+              '0%': { transform: 'translateY(-100%)' },
+              '100%': { transform: 'translateY(100vh)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            dataStream: {
+              '0%': { backgroundPosition: '0% 0%' },
+              '100%': { backgroundPosition: '0% 100%' },
+            },
+            flicker: {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '0.8' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    /* Hex Grid Pattern */
+    .hex-pattern {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%230AC8B9' fill-opacity='0.03'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    /* Circuit Lines */
+    .circuit-lines {
+      background-image: 
+        linear-gradient(rgba(10, 200, 185, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 200, 185, 0.1) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+    
+    /* Glowing Border */
+    .hextech-border {
+      position: relative;
+    }
+    .hextech-border::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(10, 200, 185, 0.5), transparent 50%, rgba(10, 200, 185, 0.5));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    
+    /* Particle Effect */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #0AC8B9;
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+      box-shadow: 0 0 10px #0AC8B9, 0 0 20px #0AC8B9;
+    }
+    
+    /* Scan Line Effect */
+    .scan-line {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, rgba(10, 200, 185, 0.3), transparent);
+      animation: scanLine 4s linear infinite;
+      pointer-events: none;
+      z-index: 100;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0e17;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #0AC8B9, #067A71);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #5DFFF4, #0AC8B9);
+    }
+    
+    /* Card Hover Effect */
+    .card-hextech {
+      transition: all 0.3s ease;
+    }
+    .card-hextech:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 0 30px rgba(10, 200, 185, 0.3), 0 0 60px rgba(10, 200, 185, 0.1);
+    }
+    
+    /* Glitch Text */
+    .glitch-text {
+      position: relative;
+    }
+    .glitch-text::before,
+    .glitch-text::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0.8;
+    }
+    .glitch-text::before {
+      animation: glitch-1 0.3s infinite linear alternate-reverse;
+      color: #0AC8B9;
+      clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+    }
+    .glitch-text::after {
+      animation: glitch-2 0.3s infinite linear alternate-reverse;
+      color: #8B5CF6;
+      clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+    }
+    @keyframes glitch-1 {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-2px); }
+    }
+    @keyframes glitch-2 {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(2px); }
+    }
+  </style>
+</head>
+<body class="bg-void min-h-screen text-white font-sans hex-pattern circuit-lines overflow-x-hidden">
+  <!-- Scan Line Effect -->
+  <div class="scan-line"></div>
+  
+  <!-- Floating Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-50 bg-void/80 backdrop-blur-xl border-b border-hextech/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16">
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+          <div class="relative">
+            <div class="w-10 h-10 bg-gradient-to-br from-hextech to-plasma rounded-lg flex items-center justify-center animate-glow-pulse">
+              <svg class="w-6 h-6 text-void" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <div class="absolute -top-1 -right-1 w-3 h-3 bg-pulse rounded-full animate-pulse"></div>
+          </div>
+          <div>
+            <h1 class="font-display font-bold text-xl tracking-wider">
+              <span class="text-hextech glitch-text" data-text="LoL">LoL</span><span class="text-white">Stonks</span>
+            </h1>
+            <p class="text-[10px] text-hextech/60 font-mono tracking-widest">SYSTEM ONLINE</p>
+          </div>
+        </div>
+        
+        <!-- Game Selector -->
+        <div class="hidden md:flex items-center gap-1 bg-void-medium/50 rounded-lg p-1 border border-hextech/20">
+          <button class="px-4 py-2 rounded-md bg-hextech/20 text-hextech font-semibold text-sm border border-hextech/40 transition-all hover:bg-hextech/30">
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+              LoL
+            </span>
+          </button>
+          <button class="px-4 py-2 rounded-md text-gray-400 font-semibold text-sm transition-all hover:bg-void-medium hover:text-white">
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4h4v4H4zM14 4h4v4h-4zM4 14h4v4H4zM14 14h4v4h-4zM9 9h4v4H9z"/></svg>
+              TFT
+            </span>
+          </button>
+          <button class="px-4 py-2 rounded-md text-gray-400 font-semibold text-sm transition-all hover:bg-void-medium hover:text-white">
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+              WR
+            </span>
+          </button>
+        </div>
+        
+        <!-- Right Section -->
+        <div class="flex items-center gap-4">
+          <!-- Locale Switcher -->
+          <div class="relative group">
+            <button class="flex items-center gap-2 px-3 py-2 rounded-lg bg-void-medium/50 border border-hextech/20 text-sm font-medium hover:border-hextech/40 transition-all">
+              <span class="text-lg">🇺🇸</span>
+              <span class="text-hextech">EN</span>
+              <svg class="w-4 h-4 text-hextech/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="absolute right-0 top-full mt-2 w-40 bg-void-medium border border-hextech/30 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+              <div class="p-2 space-y-1">
+                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-hextech/10 transition-colors">
+                  <span>🇺🇸</span><span class="text-sm">English</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-hextech/10 transition-colors">
+                  <span>🇰🇷</span><span class="text-sm">한국어</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-hextech/10 transition-colors">
+                  <span>🇯🇵</span><span class="text-sm">日本語</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-hextech/10 transition-colors">
+                  <span>🇨🇳</span><span class="text-sm">中文</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Search -->
+          <button class="p-2 rounded-lg bg-void-medium/50 border border-hextech/20 hover:border-hextech/40 transition-all group">
+            <svg class="w-5 h-5 text-hextech group-hover:text-hextech-light transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </button>
+          
+          <!-- Mobile Menu -->
+          <button class="md:hidden p-2 rounded-lg bg-void-medium/50 border border-hextech/20">
+            <svg class="w-5 h-5 text-hextech" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Status Bar -->
+    <div class="bg-void/90 border-t border-hextech/20 py-1.5">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-between text-xs font-mono text-hextech/60">
+          <div class="flex items-center gap-6">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 bg-pulse rounded-full animate-pulse"></span>
+              LIVE DATA
+            </span>
+            <span>PATCH <span class="text-hextech">14.23</span></span>
+            <span class="hidden sm:inline">LAST SYNC: <span class="text-hextech">2s AGO</span></span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="hidden sm:inline">FEEDS: <span class="text-hextech">12</span></span>
+            <span class="hidden sm:inline">ARTICLES: <span class="text-hextech">1,247</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      
+      <!-- MAIN FEED -->
+      <div class="lg:col-span-3 space-y-6">
+        
+        <!-- Category Filters -->
+        <div class="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-hide">
+          <button class="px-4 py-2 rounded-full bg-hextech/20 text-hextech border border-hextech/40 font-semibold text-sm whitespace-nowrap hover:bg-hextech/30 transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+            All Feeds
+          </button>
+          <button class="px-4 py-2 rounded-full bg-void-medium/50 text-gray-400 border border-gray-700 font-semibold text-sm whitespace-nowrap hover:border-hextech/40 hover:text-hextech transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/><path d="M19 8a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            Esports
+          </button>
+          <button class="px-4 py-2 rounded-full bg-void-medium/50 text-gray-400 border border-gray-700 font-semibold text-sm whitespace-nowrap hover:border-hextech/40 hover:text-hextech transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+            Dev Updates
+          </button>
+          <button class="px-4 py-2 rounded-full bg-void-medium/50 text-gray-400 border border-gray-700 font-semibold text-sm whitespace-nowrap hover:border-hextech/40 hover:text-hextech transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            Patches
+          </button>
+          <button class="px-4 py-2 rounded-full bg-void-medium/50 text-gray-400 border border-gray-700 font-semibold text-sm whitespace-nowrap hover:border-hextech/40 hover:text-hextech transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            Lore
+          </button>
+          <button class="px-4 py-2 rounded-full bg-void-medium/50 text-gray-400 border border-gray-700 font-semibold text-sm whitespace-nowrap hover:border-hextech/40 hover:text-hextech transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18 3a3 3 0 00-3 3v12a3 3 0 003 3 3 3 0 003-3 3 3 0 00-3-3H6a3 3 0 00-3 3 3 3 0 003 3 3 3 0 003-3V6a3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3h12a3 3 0 003-3 3 3 0 00-3-3z"/></svg>
+            Media
+          </button>
+        </div>
+        
+        <!-- Featured Article -->
+        <article class="relative overflow-hidden rounded-xl hextech-border card-hextech bg-gradient-to-br from-void-medium to-void group cursor-pointer">
+          <div class="absolute inset-0 bg-gradient-to-r from-hextech/10 via-transparent to-plasma/10 opacity-50 group-hover:opacity-70 transition-opacity"></div>
+          <div class="relative aspect-[21/9] bg-gradient-to-br from-hextech/20 to-plasma/20 flex items-center justify-center">
+            <svg class="w-20 h-20 text-hextech/30" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/>
+            </svg>
+            <div class="absolute top-4 left-4 px-3 py-1 bg-pulse/90 text-void font-bold text-xs rounded font-mono tracking-wider animate-pulse">
+              🔴 LIVE
+            </div>
+          </div>
+          <div class="relative p-6">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="px-2 py-1 bg-hextech/20 text-hextech text-xs font-bold rounded border border-hextech/30">ESPORTS</span>
+              <span class="text-hextech/60 text-sm font-mono">5 MIN AGO</span>
+            </div>
+            <h2 class="text-2xl font-display font-bold mb-2 group-hover:text-hextech-light transition-colors">
+              Worlds 2024: T1 vs BLG — Grand Finals Breakdown
+            </h2>
+            <p class="text-gray-400 text-sm leading-relaxed mb-4">
+              Complete analysis of the most anticipated match in League of Legends history. Faker's 5th World Championship run faces its ultimate test against the LPL powerhouse.
+            </p>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 text-sm text-gray-500">
+                <span>by</span>
+                <span class="text-hextech">LoL Esports</span>
+              </div>
+              <span class="text-hextech text-sm font-mono group-hover:translate-x-2 transition-transform">→ READ MORE</span>
+            </div>
+          </div>
+        </article>
+        
+        <!-- Article Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Article Card 1 -->
+          <article class="hextech-border card-hextech bg-void-medium/80 rounded-xl overflow-hidden cursor-pointer group">
+            <div class="relative aspect-video bg-gradient-to-br from-hextech/10 to-plasma/10 flex items-center justify-center">
+              <svg class="w-12 h-12 text-hextech/30" fill="currentColor" viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2z"/></svg>
+              <span class="absolute top-3 right-3 w-2 h-2 bg-pulse rounded-full animate-pulse"></span>
+            </div>
+            <div class="p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="px-2 py-0.5 bg-plasma/20 text-plasma text-[10px] font-bold rounded border border-plasma/30">DEV</span>
+                <span class="text-gray-500 text-xs font-mono">2H AGO</span>
+              </div>
+              <h3 class="font-semibold text-white group-hover:text-hextech transition-colors line-clamp-2 mb-2">
+                Dev Blog: Champion Mastery Rework Coming in 2025
+              </h3>
+              <p class="text-gray-500 text-sm line-clamp-2">
+                Major changes to the mastery system including new emotes, tokens, and progression tiers.
+              </p>
+            </div>
+          </article>
+          
+          <!-- Article Card 2 -->
+          <article class="hextech-border card-hextech bg-void-medium/80 rounded-xl overflow-hidden cursor-pointer group">
+            <div class="relative aspect-video bg-gradient-to-br from-yellow-500/10 to-orange-500/10 flex items-center justify-center">
+              <svg class="w-12 h-12 text-yellow-500/30" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div class="p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-[10px] font-bold rounded border border-yellow-500/30">PATCH</span>
+                <span class="text-gray-500 text-xs font-mono">5H AGO</span>
+              </div>
+              <h3 class="font-semibold text-white group-hover:text-hextech transition-colors line-clamp-2 mb-2">
+                Patch 14.24 Preview: Arena Mode Returns
+              </h3>
+              <p class="text-gray-500 text-sm line-clamp-2">
+                The beloved 2v2v2v2 mode makes its comeback with new augments and balance changes.
+              </p>
+            </div>
+          </article>
+          
+          <!-- Article Card 3 -->
+          <article class="hextech-border card-hextech bg-void-medium/80 rounded-xl overflow-hidden cursor-pointer group">
+            <div class="relative aspect-video bg-gradient-to-br from-green-500/10 to-emerald-500/10 flex items-center justify-center">
+              <svg class="w-12 h-12 text-green-500/30" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </div>
+            <div class="p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="px-2 py-0.5 bg-green-500/20 text-green-400 text-[10px] font-bold rounded border border-green-500/30">LORE</span>
+                <span class="text-gray-500 text-xs font-mono">8H AGO</span>
+              </div>
+              <h3 class="font-semibold text-white group-hover:text-hextech transition-colors line-clamp-2 mb-2">
+                Exploring Runeterra: The Shadow Isles' Dark History
+              </h3>
+              <p class="text-gray-500 text-sm line-clamp-2">
+                Deep dive into the lore behind the Ruination and the spectral entities that roam the Isles.
+              </p>
+            </div>
+          </article>
+          
+          <!-- Article Card 4 -->
+          <article class="hextech-border card-hextech bg-void-medium/80 rounded-xl overflow-hidden cursor-pointer group">
+            <div class="relative aspect-video bg-gradient-to-br from-pink-500/10 to-rose-500/10 flex items-center justify-center">
+              <svg class="w-12 h-12 text-pink-500/30" fill="currentColor" viewBox="0 0 24 24"><path d="M18 3a3 3 0 00-3 3v12a3 3 0 003 3 3 3 0 003-3 3 3 0 00-3-3H6a3 3 0 00-3 3 3 3 0 003 3 3 3 0 003-3V6a3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3h12a3 3 0 003-3 3 3 0 00-3-3z"/></svg>
+            </div>
+            <div class="p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="px-2 py-0.5 bg-pink-500/20 text-pink-400 text-[10px] font-bold rounded border border-pink-500/30">MEDIA</span>
+                <span class="text-gray-500 text-xs font-mono">12H AGO</span>
+              </div>
+              <h3 class="font-semibold text-white group-hover:text-hextech transition-colors line-clamp-2 mb-2">
+                New K/DA Music Video Drops — "MORE" Remix
+              </h3>
+              <p class="text-gray-500 text-sm line-clamp-2">
+                The virtual K-pop group returns with a fresh remix featuring new choreography visuals.
+              </p>
+            </div>
+          </article>
+        </div>
+        
+        <!-- Load More -->
+        <div class="text-center">
+          <button class="px-8 py-3 bg-void-medium/80 border border-hextech/30 rounded-lg text-hextech font-semibold hover:bg-hextech/10 hover:border-hextech/50 transition-all inline-flex items-center gap-2 group">
+            <svg class="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            LOAD MORE
+            <span class="text-gray-500 font-mono text-sm">(24 remaining)</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- SIDEBAR -->
+      <aside class="space-y-6">
+        <!-- Quick Stats -->
+        <div class="hextech-border bg-void-medium/80 rounded-xl p-4 animate-glow-pulse">
+          <h3 class="font-display text-sm font-bold text-hextech mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+            LIVE STATISTICS
+          </h3>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center py-2 border-b border-hextech/10">
+              <span class="text-gray-400 text-sm">Active Players</span>
+              <span class="font-mono text-hextech font-bold">847.2K</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-hextech/10">
+              <span class="text-gray-400 text-sm">Live Matches</span>
+              <span class="font-mono text-pulse font-bold">12,847</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-hextech/10">
+              <span class="text-gray-400 text-sm">Patch Version</span>
+              <span class="font-mono text-plasma font-bold">14.23</span>
+            </div>
+            <div class="flex justify-between items-center py-2">
+              <span class="text-gray-400 text-sm">Server Status</span>
+              <span class="flex items-center gap-2 text-pulse text-sm font-semibold">
+                <span class="w-2 h-2 bg-pulse rounded-full animate-pulse"></span>
+                ONLINE
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Categories -->
+        <div class="hextech-border bg-void-medium/80 rounded-xl p-4">
+          <h3 class="font-display text-sm font-bold text-hextech mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+            CATEGORIES
+          </h3>
+          <div class="space-y-2">
+            <a href="#" class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-hextech/10 transition-colors group">
+              <span class="text-gray-300 group-hover:text-hextech">Esports</span>
+              <span class="text-xs font-mono text-hextech/60 bg-hextech/10 px-2 py-0.5 rounded">342</span>
+            </a>
+            <a href="#" class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-hextech/10 transition-colors group">
+              <span class="text-gray-300 group-hover:text-hextech">Dev Updates</span>
+              <span class="text-xs font-mono text-hextech/60 bg-hextech/10 px-2 py-0.5 rounded">128</span>
+            </a>
+            <a href="#" class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-hextech/10 transition-colors group">
+              <span class="text-gray-300 group-hover:text-hextech">Patch Notes</span>
+              <span class="text-xs font-mono text-hextech/60 bg-hextech/10 px-2 py-0.5 rounded">89</span>
+            </a>
+            <a href="#" class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-hextech/10 transition-colors group">
+              <span class="text-gray-300 group-hover:text-hextech">Lore & Story</span>
+              <span class="text-xs font-mono text-hextech/60 bg-hextech/10 px-2 py-0.5 rounded">156</span>
+            </a>
+            <a href="#" class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-hextech/10 transition-colors group">
+              <span class="text-gray-300 group-hover:text-hextech">Media</span>
+              <span class="text-xs font-mono text-hextech/60 bg-hextech/10 px-2 py-0.5 rounded">203</span>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Trending -->
+        <div class="hextech-border bg-void-medium/80 rounded-xl p-4">
+          <h3 class="font-display text-sm font-bold text-hextech mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.66 11.2C17.43 10.9 17.15 10.64 16.89 10.38C16.22 9.78 15.46 9.35 14.82 8.72C13.33 7.26 13 4.85 13.95 3C13 3.23 12.17 3.75 11.46 4.32C8.87 6.4 7.85 10.07 9.07 13.22C9.11 13.32 9.15 13.42 9.15 13.55C9.15 13.77 9 13.97 8.8 14.05C8.57 14.15 8.33 14.09 8.14 13.93C8.08 13.88 8.04 13.83 8 13.76C6.87 12.33 6.69 10.28 7.45 8.64C5.78 10 4.87 12.3 5 14.47C5.06 14.97 5.12 15.47 5.29 15.97C5.43 16.57 5.7 17.17 6 17.7C7.08 19.43 8.95 20.67 10.96 20.92C13.1 21.19 15.39 20.8 17.03 19.32C18.86 17.66 19.5 15 18.56 12.72L18.43 12.46C18.22 12 17.66 11.2 17.66 11.2Z"/></svg>
+            TRENDING
+          </h3>
+          <div class="space-y-3">
+            <a href="#" class="block group">
+              <div class="flex items-start gap-3">
+                <span class="text-hextech font-mono font-bold text-sm">01</span>
+                <div>
+                  <p class="text-sm text-gray-300 group-hover:text-hextech transition-colors line-clamp-2">T1 Faker breaks all-time kill record at Worlds</p>
+                  <span class="text-xs text-gray-500">2.4K views</span>
+                </div>
+              </div>
+            </a>
+            <a href="#" class="block group">
+              <div class="flex items-start gap-3">
+                <span class="text-hextech font-mono font-bold text-sm">02</span>
+                <div>
+                  <p class="text-sm text-gray-300 group-hover:text-hextech transition-colors line-clamp-2">New champion Ambessa revealed at Worlds</p>
+                  <span class="text-xs text-gray-500">1.8K views</span>
+                </div>
+              </div>
+            </a>
+            <a href="#" class="block group">
+              <div class="flex items-start gap-3">
+                <span class="text-hextech font-mono font-bold text-sm">03</span>
+                <div>
+                  <p class="text-sm text-gray-300 group-hover:text-hextech transition-colors line-clamp-2">Arcane Season 2 release date confirmed</p>
+                  <span class="text-xs text-gray-500">1.5K views</span>
+                </div>
+              </div>
+            </a>
+            <a href="#" class="block group">
+              <div class="flex items-start gap-3">
+                <span class="text-hextech font-mono font-bold text-sm">04</span>
+                <div>
+                  <p class="text-sm text-gray-300 group-hover:text-hextech transition-colors line-clamp-2">Arena mode balance changes preview</p>
+                  <span class="text-xs text-gray-500">987 views</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Quick Links -->
+        <div class="hextech-border bg-void-medium/80 rounded-xl p-4">
+          <h3 class="font-display text-sm font-bold text-hextech mb-4">QUICK LINKS</h3>
+          <div class="grid grid-cols-2 gap-2">
+            <a href="#" class="flex items-center gap-2 px-3 py-2 bg-void/50 rounded-lg hover:bg-hextech/10 transition-colors group">
+              <svg class="w-4 h-4 text-hextech" fill="currentColor" viewBox="0 0 24 24"><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/><path d="M19 8a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <span class="text-xs text-gray-400 group-hover:text-hextech">Leaderboards</span>
+            </a>
+            <a href="#" class="flex items-center gap-2 px-3 py-2 bg-void/50 rounded-lg hover:bg-hextech/10 transition-colors group">
+              <svg class="w-4 h-4 text-hextech" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+              <span class="text-xs text-gray-400 group-hover:text-hextech">Pro Players</span>
+            </a>
+            <a href="#" class="flex items-center gap-2 px-3 py-2 bg-void/50 rounded-lg hover:bg-hextech/10 transition-colors group">
+              <svg class="w-4 h-4 text-hextech" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              <span class="text-xs text-gray-400 group-hover:text-hextech">Tier List</span>
+            </a>
+            <a href="#" class="flex items-center gap-2 px-3 py-2 bg-void/50 rounded-lg hover:bg-hextech/10 transition-colors group">
+              <svg class="w-4 h-4 text-hextech" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+              <span class="text-xs text-gray-400 group-hover:text-hextech">Builds</span>
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-void border-t border-hextech/20 mt-12 relative">
+    <div class="absolute inset-0 bg-gradient-to-t from-hextech/5 to-transparent pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 relative">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+        <!-- Brand -->
+        <div class="col-span-2 md:col-span-1">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-gradient-to-br from-hextech to-plasma rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-void" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <span class="font-display font-bold text-lg">LoLStonks</span>
+          </div>
+          <p class="text-gray-500 text-sm mb-4">
+            Your AI-powered command center for all things League of Legends.
+          </p>
+          <div class="flex items-center gap-3">
+            <a href="#" class="w-8 h-8 bg-void-medium rounded-lg flex items-center justify-center hover:bg-hextech/20 transition-colors group">
+              <svg class="w-4 h-4 text-gray-500 group-hover:text-hextech" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="#" class="w-8 h-8 bg-void-medium rounded-lg flex items-center justify-center hover:bg-hextech/20 transition-colors group">
+              <svg class="w-4 h-4 text-gray-500 group-hover:text-hextech" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+            </a>
+            <a href="#" class="w-8 h-8 bg-void-medium rounded-lg flex items-center justify-center hover:bg-hextech/20 transition-colors group">
+              <svg class="w-4 h-4 text-gray-500 group-hover:text-hextech" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 01-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 01.042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 014.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 01.14-.197.35.35 0 01.238-.042l2.906.617a1.214 1.214 0 011.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 00-.231.094.33.33 0 000 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 00.029-.463.33.33 0 00-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 00-.232-.095z"/></svg>
+            </a>
+            <a href="#" class="w-8 h-8 bg-void-medium rounded-lg flex items-center justify-center hover:bg-hextech/20 transition-colors group">
+              <svg class="w-4 h-4 text-gray-500 group-hover:text-hextech" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Feeds -->
+        <div>
+          <h4 class="font-display text-sm font-bold text-hextech mb-4">FEEDS</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">All Articles</a></li>
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">Esports News</a></li>
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">Patch Notes</a></li>
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">Dev Blogs</a></li>
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">Lore & Story</a></li>
+          </ul>
+        </div>
+        
+        <!-- Resources -->
+        <div>
+          <h4 class="font-display text-sm font-bold text-hextech mb-4">RESOURCES</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">Champion Tier List</a></li>
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">Item Builds</a></li>
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">Pro Player Stats</a></li>
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">Match History</a></li>
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">API Documentation</a></li>
+          </ul>
+        </div>
+        
+        <!-- Legal -->
+        <div>
+          <h4 class="font-display text-sm font-bold text-hextech mb-4">LEGAL</h4>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">Privacy Policy</a></li>
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">Terms of Service</a></li>
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">Cookie Policy</a></li>
+            <li><a href="#" class="text-gray-500 hover:text-hextech transition-colors text-sm">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Bottom -->
+      <div class="border-t border-hextech/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-gray-600 text-xs font-mono">
+          © 2024 LoLStonks. Not endorsed by Riot Games.
+        </p>
+        <div class="flex items-center gap-2 text-xs text-gray-600">
+          <span class="w-2 h-2 bg-pulse rounded-full animate-pulse"></span>
+          <span class="font-mono">ALL SYSTEMS OPERATIONAL</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Particle Script -->
+  <script>
+    // Generate floating particles
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 6 + 's';
+      particle.style.opacity = Math.random() * 0.5 + 0.2;
+      particlesContainer.appendChild(particle);
+    }
+  </script>
+</body>
+</html>
