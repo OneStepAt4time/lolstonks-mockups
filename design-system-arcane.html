@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoLStonks Design System — Hextech Arcane Overload</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            hextech: {
+              DEFAULT: '#0AC8B9',
+              light: '#5DFFF4',
+              dark: '#067A71',
+              glow: 'rgba(10, 200, 185, 0.6)',
+              glowIntense: 'rgba(10, 200, 185, 0.8)',
+            },
+            void: {
+              DEFAULT: '#0a0e17',
+              light: '#111827',
+              medium: '#1a1f2e',
+              card: '#151a26',
+            },
+            pulse: {
+              DEFAULT: '#00FF88',
+              glow: 'rgba(0, 255, 136, 0.5)',
+              glowIntense: 'rgba(0, 255, 136, 0.7)',
+            },
+            plasma: {
+              DEFAULT: '#8B5CF6',
+              glow: 'rgba(139, 92, 246, 0.5)',
+              glowIntense: 'rgba(139, 92, 246, 0.7)',
+            },
+            arcane: {
+              pink: '#FF6B9D',
+              gold: '#FFD700',
+              purple: '#9D4EDD',
+            }
+          },
+          fontFamily: {
+            display: ['Orbitron', 'sans-serif'],
+            sans: ['Rajdhani', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          animation: {
+            'glow-intense': 'glowIntense 1.5s ease-in-out infinite',
+            'glow-pulse-multi': 'glowPulseMulti 2s ease-in-out infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'scan-line': 'scanLine 3s linear infinite',
+            'particle-float': 'particleFloat 8s ease-in-out infinite',
+            'glitch-text': 'glitchText 0.3s infinite',
+            'circuit-flow': 'circuitFlow 20s linear infinite',
+            'rotate-slow': 'rotateSlow 10s linear infinite',
+            'shimmer': 'shimmer 2s ease-in-out infinite',
+          },
+          keyframes: {
+            glowIntense: {
+              '0%, 100%': { 
+                boxShadow: '0 0 30px rgba(10, 200, 185, 0.4), 0 0 60px rgba(10, 200, 185, 0.2), inset 0 0 30px rgba(10, 200, 185, 0.15)',
+                borderColor: '#0AC8B9'
+              },
+              '50%': { 
+                boxShadow: '0 0 50px rgba(10, 200, 185, 0.7), 0 0 100px rgba(10, 200, 185, 0.4), inset 0 0 50px rgba(10, 200, 185, 0.25)',
+                borderColor: '#5DFFF4'
+              },
+            },
+            glowPulseMulti: {
+              '0%, 100%': { 
+                boxShadow: '0 0 20px #0AC8B9, 0 0 40px #8B5CF6',
+              },
+              '50%': { 
+                boxShadow: '0 0 40px #0AC8B9, 0 0 80px #8B5CF6, 0 0 120px #00FF88',
+              },
+            },
+            scanLine: {
+              '0%': { transform: 'translateY(-100%)', opacity: '0' },
+              '10%': { opacity: '1' },
+              '90%': { opacity: '1' },
+              '100%': { transform: 'translateY(100vh)', opacity: '0' },
+            },
+            particleFloat: {
+              '0%, 100%': { transform: 'translateY(0) scale(1)', opacity: '0.7' },
+              '50%': { transform: 'translateY(-30px) scale(1.2)', opacity: '1' },
+            },
+            glitchText: {
+              '0%': { transform: 'translate(0)' },
+              '20%': { transform: 'translate(-2px, 2px)' },
+              '40%': { transform: 'translate(-2px, -2px)' },
+              '60%': { transform: 'translate(2px, 2px)' },
+              '80%': { transform: 'translate(2px, -2px)' },
+              '100%': { transform: 'translate(0)' },
+            },
+            circuitFlow: {
+              '0%': { backgroundPosition: '0% 0%' },
+              '100%': { backgroundPosition: '0% 100%' },
+            },
+            rotateSlow: {
+              '0%': { transform: 'rotate(0deg)' },
+              '100%': { transform: 'rotate(360deg)' },
+            },
+            shimmer: {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '0.6' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    /* Intense Background Pattern */
+    .hex-intense {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%230AC8B9' fill-opacity='0.05'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    /* Circuit Lines - Animated */
+    .circuit-animated {
+      background-image: 
+        linear-gradient(rgba(10, 200, 185, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 200, 185, 0.15) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: circuitFlow 20s linear infinite;
+    }
+    
+    /* Intense Glowing Border */
+    .border-arcane {
+      position: relative;
+      animation: glowPulseMulti 2s ease-in-out infinite;
+    }
+    .border-arcane::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(10, 200, 185, 0.8), rgba(139, 92, 246, 0.8), rgba(0, 255, 136, 0.8), rgba(10, 200, 185, 0.8));
+      background-size: 300% 300%;
+      animation: circuitFlow 3s linear infinite;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    
+    /* Scan Line Effect */
+    .scan-line {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, rgba(10, 200, 185, 0.6), rgba(139, 92, 246, 0.6), rgba(10, 200, 185, 0.6), transparent);
+      animation: scanLine 3s linear infinite;
+      pointer-events: none;
+      z-index: 100;
+      box-shadow: 0 0 20px rgba(10, 200, 185, 0.4);
+    }
+    
+    /* Floating Particles Container */
+    .particles-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      animation: particleFloat 8s ease-in-out infinite;
+    }
+    
+    /* Glitch Text Effect */
+    .glitch-arcane {
+      position: relative;
+      animation: glitchText 0.3s infinite;
+    }
+    .glitch-arcane::before,
+    .glitch-arcane::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0.8;
+    }
+    .glitch-arcane::before {
+      color: #0AC8B9;
+      animation: glitchText 0.15s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 40%, 0 40%);
+    }
+    .glitch-arcane::after {
+      color: #8B5CF6;
+      animation: glitchText 0.2s infinite reverse;
+      clip-path: polygon(0 60%, 100% 60%, 100% 100%, 0 100%);
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #0a0e17; }
+    ::-webkit-scrollbar-thumb { 
+      background: linear-gradient(180deg, #0AC8B9, #8B5CF6); 
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover { 
+      background: linear-gradient(180deg, #5DFFF4, #9D4EDD);
+    }
+    
+    /* Intense Card Hover */
+    .card-arcane {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-arcane:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 
+        0 0 40px rgba(10, 200, 185, 0.4),
+        0 0 80px rgba(139, 92, 246, 0.3),
+        0 0 120px rgba(0, 255, 136, 0.2);
+    }
+    
+    /* Focus Ring */
+    .focus-ring-arcane:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px #0a0e17, 0 0 0 6px #0AC8B9, 0 0 20px rgba(10, 200, 185, 0.4);
+    }
+    
+    /* Skeleton Animation */
+    .skeleton-arcane {
+      background: linear-gradient(90deg, #1a1f2e 25%, #2d3446 50%, #1a1f2e 75%);
+      background-size: 200% 100%;
+      animation: skeleton 1.2s ease-in-out infinite;
+    }
+    @keyframes skeleton {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    
+    /* Section Marker */
+    .section-marker-arcane {
+      position: relative;
+      padding-left: 1.25rem;
+    }
+    .section-marker-arcane::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, #0AC8B9, #8B5CF6, #00FF88);
+      border-radius: 2px;
+      box-shadow: 0 0 10px rgba(10, 200, 185, 0.5);
+    }
+  </style>
+</head>
+<body class="bg-void min-h-screen text-white font-sans hex-intense circuit-animated overflow-x-hidden">
+
+  <!-- Scan Line Effect -->
+  <div class="scan-line"></div>
+  
+  <!-- Floating Particles -->
+  <div class="particles-container" id="particles"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- DESIGN TOKENS SECTION -->
+  <!-- ═════════════════════════════════════════════════════════════════════ -->
+  
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    
+    <!-- Header -->
+    <header class="mb-16 text-center relative">
+      <div class="absolute -inset-4 bg-gradient-to-r from-hextech/10 via-plasma/10 to-pulse/10 rounded-3xl -z-10 blur-3xl"></div>
+      <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-hextech/30 to-plasma/30 border border-hextech/50 rounded-full mb-6 animate-glow-pulse-multi">
+        <span class="w-2 h-2 bg-pulse rounded-full animate-pulse shadow-lg shadow-pulse/50"></span>
+        <span class="text-hextech text-sm font-mono tracking-wider glitch-arcane" data-text="ARCADE OVERLOAD">ARCADE OVERLOAD</span>
+      </div>
+      <h1 class="font-display text-4xl md:text-5xl font-bold mb-4 relative">
+        <span class="text-hextech glitch-arcane" data-text="HEXTECH">HEXTECH</span> 
+        <span class="text-white"> Design System</span>
+      </h1>
+      <p class="text-gray-400 max-w-2xl mx-auto">
+        Variante B — Massimo effetto visivo. Ispirato all'estetica di Arcane. 
+        <span class="text-hextech animate-shimmer">Esperienza immersiva totale.</span>
+      </p>
+    </header>
+
+    <!-- Design Tokens -->
+    <section class="mb-20">
+      <div class="section-marker-arcane mb-8">
+        <h2 class="font-display text-2xl font-bold text-white">Design Tokens</h2>
+        <p class="text-gray-500 text-sm mt-1">Foundation with intense glow and Arcane color accents</p>
+      </div>
+      
+      <!-- Colors -->
+      <div class="bg-void-card rounded-xl border-arcane p-6 mb-6">
+        <h3 class="font-display text-sm font-bold text-hextech mb-6 tracking-wider animate-glow-pulse-multi">COLOR PALETTE</h3>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+          <div>
+            <div class="h-24 rounded-lg bg-hextech mb-2 shadow-lg shadow-hextech/50 animate-glow-intense"></div>
+            <p class="text-xs font-mono text-white">Hextech</p>
+            <p class="text-xs font-mono text-gray-500">#0AC8B9</p>
+          </div>
+          <div>
+            <div class="h-24 rounded-lg bg-plasma mb-2 shadow-lg shadow-plasma/50 animate-glow-intense" style="animation-delay: 0.5s;"></div>
+            <p class="text-xs font-mono text-white">Plasma</p>
+            <p class="text-xs font-mono text-gray-500">#8B5CF6</p>
+          </div>
+          <div>
+            <div class="h-24 rounded-lg bg-pulse mb-2 shadow-lg shadow-pulse/50 animate-glow-intense" style="animation-delay: 1s;"></div>
+            <p class="text-xs font-mono text-white">Pulse</p>
+            <p class="text-xs font-mono text-gray-500">#00FF88</p>
+          </div>
+          <div>
+            <div class="h-24 rounded-lg bg-arcane-pink mb-2 shadow-lg shadow-arcane-pink/50 animate-glow-intense" style="animation-delay: 1.5s;"></div>
+            <p class="text-xs font-mono text-white">Arcane Pink</p>
+            <p class="text-xs font-mono text-gray-500">#FF6B9D</p>
+          </div>
+          <div>
+            <div class="h-24 rounded-lg bg-arcane-gold mb-2 shadow-lg shadow-arcane-gold/50 animate-glow-intense" style="animation-delay: 2s;"></div>
+            <p class="text-xs font-mono text-white">Arcane Gold</p>
+            <p class="text-xs font-mono text-gray-500">#FFD700</p>
+          </div>
+          <div>
+            <div class="h-24 rounded-lg bg-arcane-purple mb-2 shadow-lg shadow-arcane-purple/50 animate-glow-intense" style="animation-delay: 2.5s;"></div>
+            <p class="text-xs font-mono text-white">Arcane Purple</p>
+            <p class="text-xs font-mono text-gray-500">#9D4EDD</p>
+          </div>
+          <div>
+            <div class="h-24 rounded-lg bg-red-500 mb-2 shadow-lg shadow-red-500/50 animate-glow-intense" style="animation-delay: 3s;"></div>
+            <p class="text-xs font-mono text-white">Danger</p>
+            <p class="text-xs font-mono text-gray-500">#EF4444</p>
+          </div>
+        </div>
+        
+        <!-- Background Colors -->
+        <h4 class="text-xs font-mono text-gray-400 mb-4 tracking-wider">BACKGROUNDS</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div>
+            <div class="h-20 rounded-lg bg-void border-arcane border-2 mb-2"></div>
+            <p class="text-xs font-mono text-white">Void</p>
+            <p class="text-xs font-mono text-gray-500">#0a0e17</p>
+          </div>
+          <div>
+            <div class="h-20 rounded-lg bg-void-medium border border-white/10 mb-2 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-hextech/5 to-plasma/5 animate-pulse"></div>
+            </div>
+            <p class="text-xs font-mono text-white">Void Medium</p>
+            <p class="text-xs font-mono text-gray-500">#1a1f2e</p>
+          </div>
+          <div>
+            <div class="h-20 rounded-lg bg-void-card border border-white/10 mb-2"></div>
+            <p class="text-xs font-mono text-white">Void Card</p>
+            <p class="text-xs font-mono text-gray-500">#151a26</p>
+          </div>
+          <div>
+            <div class="h-20 rounded-lg bg-gradient-to-br from-hextech/10 to-plasma/10 border border-hextech/30 mb-2 relative overflow-hidden">
+              <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%222%222%20height%3D%222%22%20viewBox%3D%220%200%2022%2022%22%3E%3Crect%20width%3D%2222%22%20height%3D%2222%22%20fill%3D%22rgba(10%2C%202%2C%20185%2C%200.05)%22/%3E%3C/svg%3E')] animate-circuit-flow opacity-30"></div>
+            </div>
+            <p class="text-xs font-mono text-white">Gradient</p>
+            <p class="text-xs font-mono text-gray-500">Mixed</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Typography -->
+      <div class="bg-void-card rounded-xl border-arcane p-6 mb-6">
+        <h3 class="font-display text-sm font-bold text-hextech mb-6 tracking-wider">TYPOGRAPHY</h3>
+        
+        <div class="space-y-6">
+          <div class="flex items-baseline justify-between border-b border-hextech/20 pb-4">
+            <span class="font-display text-3xl glitch-arcane" data-text="Display / Orbitron">Display / Orbitron</span>
+            <span class="text-xs font-mono text-gray-500">Headlines, Logos</span>
+          </div>
+          <div class="flex items-baseline justify-between border-b border-hextech/20 pb-4">
+            <span class="font-sans text-2xl">Body / Rajdhani</span>
+            <span class="text-xs font-mono text-gray-500">Body text, UI labels</span>
+          </div>
+          <div class="flex items-baseline justify-between border-b border-hextech/20 pb-4">
+            <span class="font-mono text-lg">Mono / JetBrains</span>
+            <span class="text-xs font-mono text-gray-500">Code, timestamps, data</span>
+          </div>
+        </div>
+        
+        <!-- Type Scale with Glow -->
+        <div class="mt-8">
+          <h4 class="text-xs font-mono text-gray-400 mb-4 tracking-wider">TYPE SCALE</h4>
+          <div class="space-y-3">
+            <div class="flex items-center gap-4">
+              <span class="w-16 text-xs font-mono text-gray-500">text-xs</span>
+              <span class="text-xs text-hextech/80">The quick brown fox jumps over lazy dog</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="w-16 text-xs font-mono text-gray-500">text-sm</span>
+              <span class="text-sm text-hextech/90">The quick brown fox jumps over lazy dog</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="w-16 text-xs font-mono text-gray-500">text-base</span>
+              <span class="text-base text-white/90">The quick brown fox jumps over lazy dog</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="w-16 text-xs font-mono text-gray-500">text-lg</span>
+              <span class="text-lg text-hextech-light">The quick brown fox jumps over</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="w-16 text-xs font-mono text-gray-500">text-xl</span>
+              <span class="text-xl text-hextech glitch-arcane" data-text="The quick brown fox">The quick brown fox</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="w-16 text-xs font-mono text-gray-500">text-2xl</span>
+              <span class="text-2xl text-plasma glitch-arcane" data-text="The quick brown fox">The quick brown fox</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Spacing -->
+      <div class="bg-void-card rounded-xl border-arcane p-6">
+        <h3 class="font-display text-sm font-bold text-hextech mb-6 tracking-wider">SPACING SCALE</h3>
+        <div class="flex flex-wrap items-end gap-4">
+          <div class="text-center">
+            <div class="w-1 h-1 bg-hextech mb-2 mx-auto animate-pulse"></div>
+            <span class="text-xs font-mono text-gray-500">4px</span>
+          </div>
+          <div class="text-center">
+            <div class="w-2 h-2 bg-hextech mb-2 mx-auto animate-pulse" style="animation-delay: 0.2s"></div>
+            <span class="text-xs font-mono text-gray-500">8px</span>
+          </div>
+          <div class="text-center">
+            <div class="w-3 h-3 bg-plasma mb-2 mx-auto animate-pulse" style="animation-delay: 0.4s"></div>
+            <span class="text-xs font-mono text-gray-500">12px</span>
+          </div>
+          <div class="text-center">
+            <div class="w-4 h-4 bg-pulse mb-2 mx-auto animate-pulse" style="animation-delay: 0.6s"></div>
+            <span class="text-xs font-mono text-gray-500">16px</span>
+          </div>
+          <div class="text-center">
+            <div class="w-6 h-6 bg-hextech mb-2 mx-auto animate-pulse" style="animation-delay: 0.8s"></div>
+            <span class="text-xs font-mono text-gray-500">24px</span>
+          </div>
+          <div class="text-center">
+            <div class="w-8 h-8 bg-plasma mb-2 mx-auto animate-pulse" style="animation-delay: 1s"></div>
+            <span class="text-xs font-mono text-gray-500">32px</span>
+          </div>
+          <div class="text-center">
+            <div class="w-10 h-10 bg-pulse mb-2 mx-auto animate-pulse" style="animation-delay: 1.2s"></div>
+            <span class="text-xs font-mono text-gray-500">40px</span>
+          </div>
+          <div class="text-center">
+            <div class="w-12 h-12 bg-gradient-to-r from-hextech to-plasma mb-2 mx-auto animate-pulse" style="animation-delay: 1.4s"></div>
+            <span class="text-xs font-mono text-gray-500">48px</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 1: HEADER/NAVBAR -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-arcane mb-8">
+        <h2 class="font-display text-2xl font-bold text-white">1. Header / Navbar</h2>
+        <p class="text-gray-500 text-sm mt-1">Intense glow effects and animated elements</p>
+      </div>
+      
+      <!-- State: Default -->
+      <div class="mb-8">
+        <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: DEFAULT</p>
+        <div class="bg-void-medium rounded-xl border-arcane overflow-hidden animate-glow-pulse-multi">
+          <header class="bg-void/95 backdrop-blur-xl border-b-2 border-hextech/50">
+            <div class="px-4 sm:px-6">
+              <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 relative">
+                  <div class="w-10 h-10 bg-gradient-to-br from-hextech via-plasma to-pulse rounded-lg flex items-center justify-center animate-glow-intense">
+                    <svg class="w-6 h-6 text-void" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                  </div>
+                  <div class="absolute -top-1 -right-1 w-3 h-3 bg-pulse rounded-full animate-ping"></div>
+                  <div>
+                    <h1 class="font-display font-bold text-xl tracking-wider">
+                      <span class="text-hextech glitch-arcane" data-text="LoL">LoL</span><span class="text-white">Stonks</span>
+                    </h1>
+                    <p class="text-[10px] text-hextech/60 font-mono tracking-widest animate-pulse">SYSTEM ONLINE</p>
+                  </div>
+                </div>
+                
+                <!-- Game Selector -->
+                <div class="hidden md:flex items-center gap-1 bg-void/50 rounded-lg p-1 border border-hextech/40 animate-glow-pulse-multi">
+                  <button class="px-4 py-2 rounded-md bg-gradient-to-r from-hextech to-plasma text-void font-semibold text-sm border-2 border-hextech shadow-lg shadow-hextech/30">
+                    <span class="flex items-center gap-2">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                      LoL
+                    </span>
+                  </button>
+                  <button class="px-4 py-2 rounded-md text-gray-400 font-semibold text-sm transition-all hover:bg-void-medium hover:text-hextech hover:border-hextech/40">
+                    <span class="flex items-center gap-2">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4h4v4H4zM14 4h4v4h-4zM4 14h4v4H4zM14 14h4v4h-4zM9 9h4v4H9z"/></svg>
+                      TFT
+                    </span>
+                  </button>
+                  <button class="px-4 py-2 rounded-md text-gray-400 font-semibold text-sm transition-all hover:bg-void-medium hover:text-hextech hover:border-hextech/40">
+                    <span class="flex items-center gap-2">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+                      WR
+                    </span>
+                  </button>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="flex items-center gap-3">
+                  <!-- Locale Switcher -->
+                  <div class="relative group">
+                    <button class="flex items-center gap-2 px-3 py-2 rounded-lg bg-void/50 border-2 border-hextech/40 text-sm font-medium hover:border-hextech transition-all animate-glow-pulse-multi">
+                      <span class="text-lg animate-bounce">🇺🇸</span>
+                      <span class="text-hextech glitch-arcane" data-text="EN">EN</span>
+                      <svg class="w-4 h-4 text-hextech/60 animate-rotate-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  <!-- Search -->
+                  <button class="p-2 rounded-lg bg-void/50 border-2 border-hextech/40 hover:border-hextech transition-all animate-glow-pulse-multi">
+                    <svg class="w-5 h-5 text-hextech animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                  </button>
+                  
+                  <!-- Mobile Menu -->
+                  <button class="md:hidden p-2 rounded-lg bg-void/50 border-2 border-hextech/40 animate-glow-pulse-multi">
+                    <svg class="w-5 h-5 text-hextech animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
+        </div>
+      </div>
+      
+      <!-- State: Scrolled/Sticky -->
+      <div class="mb-8">
+        <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: SCROLLED / STICKY</p>
+        <div class="bg-void-medium rounded-xl border-arcane overflow-hidden">
+          <header class="bg-void/98 backdrop-blur-2xl border-b-2 border-hextech shadow-2xl shadow-hextech/20">
+            <div class="px-4 sm:px-6">
+              <div class="flex items-center justify-between h-14">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-gradient-to-br from-hextech via-plasma to-pulse rounded-lg flex items-center justify-center animate-glow-intense">
+                    <svg class="w-5 h-5 text-void" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                  </div>
+                  <span class="font-display font-bold text-sm tracking-wider">
+                    <span class="text-hextech glitch-arcane" data-text="LoL">LoL</span><span class="text-white">Stonks</span>
+                  </span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button class="p-2 rounded-lg bg-void/50 border border-hextech/40 hover:border-hextech transition-all animate-glow-pulse-multi">
+                    <svg class="w-4 h-4 text-hextech" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
+        </div>
+      </div>
+      
+      <!-- State: Mobile Menu Open -->
+      <div class="mb-8">
+        <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: MOBILE MENU OPEN (375px)</p>
+        <div class="w-[375px] bg-void-medium rounded-xl border-arcane overflow-hidden">
+          <header class="bg-void/95 backdrop-blur-xl border-b-2 border-hextech/50">
+            <div class="px-4">
+              <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 bg-gradient-to-br from-hextech via-plasma to-pulse rounded-lg flex items-center justify-center animate-glow-intense">
+                    <svg class="w-5 h-5 text-void" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                  </div>
+                  <span class="font-display font-bold text-sm tracking-wider text-white">LoLStonks</span>
+                </div>
+                <button class="p-2">
+                  <svg class="w-5 h-5 text-hextech animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <!-- Mobile Menu Content -->
+            <div class="px-4 pb-4 border-t-2 border-hextech/30 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-hextech/5 to-plasma/5 opacity-50 pointer-events-none"></div>
+              <div class="pt-4 space-y-3 relative">
+                <div class="grid grid-cols-3 gap-2">
+                  <button class="px-3 py-2 rounded-lg bg-gradient-to-r from-hextech to-plasma text-void font-semibold text-sm border-2 border-hextech shadow-lg shadow-hextech/30">LoL</button>
+                  <button class="px-3 py-2 rounded-lg text-gray-400 font-semibold text-sm bg-void/50 border border-gray-700 hover:bg-void-medium hover:text-hextech hover:border-hextech/40">TFT</button>
+                  <button class="px-3 py-2 rounded-lg text-gray-400 font-semibold text-sm bg-void/50 border border-gray-700 hover:bg-void-medium hover:text-hextech hover:border-hextech/40">WR</button>
+                </div>
+                <button class="w-full flex items-center gap-3 px-3 py-2 bg-void/50 rounded-lg border-2 border-hextech/20 text-left hover:border-hextech/40 animate-glow-pulse-multi">
+                  <svg class="w-5 h-5 text-hextech animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                  </svg>
+                  <span class="text-gray-300 text-sm">Search articles...</span>
+                </button>
+              </div>
+            </div>
+          </header>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 2: STATUS BAR -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-arcane mb-8">
+        <h2 class="font-display text-2xl font-bold text-white">2. Status Bar</h2>
+        <p class="text-gray-500 text-sm mt-1">Intense glow with animated indicators</p>
+      </div>
+      
+      <div class="space-y-6">
+        <!-- State: Connected -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: CONNECTED</p>
+          <div class="bg-void-card rounded-xl border-arcane overflow-hidden animate-glow-pulse-multi">
+            <div class="bg-void/90 border-b-2 border-hextech/30 py-2 px-4 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-r from-hextech/5 via-transparent to-plasma/5 pointer-events-none"></div>
+              <div class="flex items-center justify-between text-xs font-mono text-gray-400 relative">
+                <div class="flex items-center gap-6">
+                  <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-pulse rounded-full animate-ping shadow-lg shadow-pulse/50"></span>
+                    <span class="text-pulse font-bold animate-pulse">LIVE DATA</span>
+                  </span>
+                  <span class="text-hextech font-bold glitch-arcane" data-text="PATCH 14.23">PATCH 14.23</span>
+                  <span class="hidden sm:inline">LAST SYNC: <span class="text-hextech">2s AGO</span></span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="hidden sm:inline">FEEDS: <span class="text-hextech">12</span></span>
+                  <span class="hidden sm:inline">ARTICLES: <span class="text-hextech">1,247</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- State: Syncing -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: SYNCING</p>
+          <div class="bg-void-card rounded-xl border-arcane overflow-hidden">
+            <div class="bg-void/90 border-b-2 border-plasma/50 py-2 px-4">
+              <div class="flex items-center justify-between text-xs font-mono text-gray-400">
+                <div class="flex items-center gap-6">
+                  <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-plasma animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-plasma font-bold animate-pulse">SYNCING...</span>
+                  </span>
+                  <span>PATCH <span class="text-plasma">14.23</span></span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="hidden sm:inline">FEEDS: <span class="text-plasma">12</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- State: Offline -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: OFFLINE</p>
+          <div class="bg-void-card rounded-xl border border-arcane-gold/50 overflow-hidden">
+            <div class="bg-void/90 border-b-2 border-arcane-gold/30 py-2 px-4">
+              <div class="flex items-center justify-between text-xs font-mono text-gray-500">
+                <div class="flex items-center gap-6">
+                  <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-arcane-gold rounded-full animate-pulse shadow-lg shadow-arcane-gold/30"></span>
+                    <span class="text-arcane-gold font-bold">OFFLINE MODE</span>
+                  </span>
+                  <span class="text-arcane-gold/80">SHOWING CACHED DATA</span>
+                </div>
+                <button class="px-2 py-1 bg-arcane-gold/20 text-arcane-gold border border-arcane-gold/50 rounded text-xs font-bold hover:bg-arcane-gold/30 transition-all animate-pulse">RETRY</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- State: Error -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: ERROR</p>
+          <div class="bg-void-card rounded-xl border-2 border-red-500/50 overflow-hidden animate-glow-pulse-multi">
+            <div class="bg-void/90 border-b-2 border-red-500/50 py-2 px-4 relative">
+              <div class="absolute inset-0 bg-gradient-to-r from-red-500/10 via-transparent to-red-500/10 pointer-events-none"></div>
+              <div class="flex items-center justify-between text-xs font-mono text-gray-500 relative">
+                <div class="flex items-center gap-6">
+                  <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-red-500 rounded-full animate-ping shadow-lg shadow-red-500/50"></span>
+                    <span class="text-red-500 font-bold glitch-arcane" data-text="CONNECTION ERROR">CONNECTION ERROR</span>
+                  </span>
+                  <span class="text-red-500/80">API UNREACHABLE</span>
+                </div>
+                <button class="px-2 py-1 bg-red-500/20 text-red-500 border border-red-500/50 rounded text-xs font-bold hover:bg-red-500/30 transition-all animate-pulse">RECONNECT</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 3: ARTICLE CARD -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-arcane mb-8">
+        <h2 class="font-display text-2xl font-bold text-white">3. Article Card</h2>
+        <p class="text-gray-500 text-sm mt-1">Intense hover effects with multi-layer glow</p>
+      </div>
+      
+      <!-- Featured Card -->
+      <div class="mb-10">
+        <p class="text-xs font-mono text-hextech mb-3 tracking-wider">VARIANT: FEATURED</p>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Default -->
+          <div>
+            <p class="text-xs text-gray-500 mb-2">Default</p>
+            <article class="bg-void-card rounded-xl border-arcane overflow-hidden cursor-pointer card-arcane">
+              <div class="aspect-[21/9] bg-gradient-to-br from-hextech/20 via-plasma/15 to-pulse/10 flex items-center justify-center relative overflow-hidden">
+                <svg class="w-16 h-16 text-hextech/30" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2z"/>
+                </svg>
+                <div class="absolute top-3 left-3 px-2 py-1 bg-pulse text-void font-bold text-xs rounded font-mono animate-pulse shadow-lg shadow-pulse/50">
+                  🔴 LIVE
+                </div>
+                <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%22200%222%20height%3D%22200%22%20viewBox%3D%220%200%20200%20200%22%3E%3Crect%20width%3D%22200%22%20height%3D%22200%22%20fill%3D%22none%22%20stroke%3D%22rgba(10%2C%202%2C%20185%2C%200.1)%22%20stroke-width%3D%2%22/%3E%3C/svg%3E')] opacity-30 animate-circuit-flow"></div>
+              </div>
+              <div class="p-5 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-hextech/5 to-transparent pointer-events-none"></div>
+                <div class="flex items-center gap-3 mb-3 relative">
+                  <span class="px-2 py-1 bg-hextech/30 text-hextech text-xs font-bold rounded border border-hextech/50 shadow-lg shadow-hextech/30">ESPORTS</span>
+                  <span class="text-gray-500 text-xs font-mono">5 MIN AGO</span>
+                </div>
+                <h3 class="text-xl font-display font-bold mb-2 text-white relative">
+                  Worlds 2024: T1 vs BLG — Grand Finals Breakdown
+                </h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4 relative">
+                  Complete analysis of most anticipated match in League of Legends history.
+                </p>
+                <div class="flex items-center justify-between relative">
+                  <span class="text-gray-500 text-sm">by <span class="text-hextech">LoL Esports</span></span>
+                  <span class="text-hextech text-sm font-mono animate-bounce">→ READ MORE</span>
+                </div>
+              </div>
+            </article>
+          </div>
+          
+          <!-- Hover State -->
+          <div>
+            <p class="text-xs text-gray-500 mb-2">Hover State</p>
+            <article class="bg-void-card rounded-xl border-2 border-hextech overflow-hidden cursor-pointer card-arcane shadow-xl shadow-hextech/30 transform -translate-y-2">
+              <div class="aspect-[21/9] bg-gradient-to-br from-hextech/30 via-plasma/25 to-pulse/20 flex items-center justify-center relative overflow-hidden">
+                <svg class="w-16 h-16 text-hextech/50" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2z"/>
+                </svg>
+                <div class="absolute top-3 left-3 px-2 py-1 bg-pulse text-void font-bold text-xs rounded font-mono animate-pulse shadow-lg shadow-pulse/70">
+                  🔴 LIVE
+                </div>
+              </div>
+              <div class="p-5 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-hextech/10 to-transparent pointer-events-none"></div>
+                <div class="flex items-center gap-3 mb-3 relative">
+                  <span class="px-2 py-1 bg-hextech/50 text-hextech-light text-xs font-bold rounded border-2 border-hextech shadow-lg shadow-hextech/50">ESPORTS</span>
+                  <span class="text-hextech text-xs font-mono animate-pulse">5 MIN AGO</span>
+                </div>
+                <h3 class="text-xl font-display font-bold mb-2 text-hextech-light glitch-arcane relative" data-text="Worlds 2024: T1 vs BLG — Grand Finals Breakdown">
+                  Worlds 2024: T1 vs BLG — Grand Finals Breakdown
+                </h3>
+                <p class="text-gray-300 text-sm leading-relaxed mb-4 relative">
+                  Complete analysis of most anticipated match in League of Legends history.
+                </p>
+                <div class="flex items-center justify-between relative">
+                  <span class="text-gray-400 text-sm">by <span class="text-hextech-light">LoL Esports</span></span>
+                  <span class="text-hextech-light text-sm font-mono translate-x-2 animate-bounce">→ READ MORE</span>
+                </div>
+              </div>
+            </article>
+          </div>
+          
+          <!-- Loading Skeleton -->
+          <div>
+            <p class="text-xs text-gray-500 mb-2">Loading Skeleton</p>
+            <div class="bg-void-card rounded-xl border-arcane overflow-hidden">
+              <div class="aspect-[21/9] skeleton-arcane relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-hextech/10 to-transparent animate-circuit-flow opacity-20"></div>
+              </div>
+              <div class="p-5 space-y-3">
+                <div class="flex gap-3 relative">
+                  <div class="h-6 w-20 skeleton-arcane rounded"></div>
+                  <div class="h-6 w-24 skeleton-arcane rounded"></div>
+                </div>
+                <div class="h-6 skeleton-arcane rounded w-3/4"></div>
+                <div class="h-4 skeleton-arcane rounded w-full"></div>
+                <div class="h-4 skeleton-arcane rounded w-2/3"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Empty State -->
+          <div>
+            <p class="text-xs text-gray-500 mb-2">Empty State</p>
+            <div class="bg-void-card rounded-xl border-arcane overflow-hidden">
+              <div class="aspect-[21/9] bg-void flex items-center justify-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2220%222%20height%3D%22220%22%20viewBox%3D%220%200%20220%20220%22%3E%3Crect%20width%3D%22220%22%20height%3D%22220%22%20fill%3D%22none%22%20stroke%3D%22rgba(10%2C%202%2C%20185%2C%200.08)%22%20stroke-width%3D%2%22/%3E%3C/svg%3E')] opacity-20 animate-circuit-flow"></div>
+                <div class="text-center relative">
+                  <svg class="w-12 h-12 text-gray-600 mx-auto mb-3 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2zM7 16h6M7 8h6v4H7V8z"/>
+                  </svg>
+                  <p class="text-gray-500 text-sm">No featured articles</p>
+                </div>
+              </div>
+              <div class="p-5 text-center relative">
+                <div class="absolute inset-0 bg-gradient-to-br from-hextech/5 to-transparent pointer-events-none"></div>
+                <p class="text-gray-500 text-sm">Check back soon for new content</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Standard Card (Grid) -->
+      <div class="mb-10">
+        <p class="text-xs font-mono text-hextech mb-3 tracking-wider">VARIANT: STANDARD (GRID)</p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Default -->
+          <article class="bg-void-card rounded-xl border-arcane overflow-hidden cursor-pointer card-arcane">
+            <div class="aspect-video bg-gradient-to-br from-hextech/20 to-plasma/15 flex items-center justify-center relative overflow-hidden">
+              <svg class="w-10 h-10 text-hextech/30" fill="currentColor" viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2z"/></svg>
+              <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%22150%222%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22none%22%20stroke%3D%22rgba(10%2C%202%2C%20185%2C%200.1)%22%20stroke-width%3D%2%22/%3E%3C/svg%3E')] opacity-20 animate-circuit-flow"></div>
+            </div>
+            <div class="p-4 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-hextech/5 to-transparent pointer-events-none"></div>
+              <div class="flex items-center gap-2 mb-2 relative">
+                <span class="px-2 py-0.5 bg-plasma/30 text-plasma text-[10px] font-bold rounded border border-plasma/40 shadow-lg shadow-plasma/30">DEV</span>
+                <span class="text-gray-500 text-xs font-mono">2H</span>
+              </div>
+              <h3 class="font-semibold text-white text-sm mb-1 line-clamp-2 relative">Dev Blog: Champion Mastery Rework</h3>
+              <p class="text-gray-500 text-xs line-clamp-2">Major changes to mastery system coming in 2025.</p>
+            </div>
+          </article>
+          
+          <!-- Hover -->
+          <article class="bg-void-card rounded-xl border-2 border-hextech overflow-hidden cursor-pointer card-arcane shadow-xl shadow-hextech/30 transform -translate-y-1">
+            <div class="aspect-video bg-gradient-to-br from-hextech/30 to-plasma/25 flex items-center justify-center relative overflow-hidden">
+              <svg class="w-10 h-10 text-hextech/50" fill="currentColor" viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2z"/></svg>
+              <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%22150%222%20height%3D%22150%22%20viewBox%3D%220%200%20150%20150%22%3E%3Crect%20width%3D%22150%22%20height%3D%22150%22%20fill%3D%22none%22%20stroke%3D%22rgba(139%2C%2092%2C%20246%2C%200.2)%22%20stroke-width%3D%2%22/%3E%3C/svg%3E')] opacity-30 animate-circuit-flow"></div>
+            </div>
+            <div class="p-4 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-hextech/10 to-transparent pointer-events-none"></div>
+              <div class="flex items-center gap-2 mb-2 relative">
+                <span class="px-2 py-0.5 bg-arcane-gold/40 text-arcane-gold text-[10px] font-bold rounded border-2 border-arcane-gold/60 shadow-lg shadow-arcane-gold/40">PATCH</span>
+                <span class="text-hextech text-xs font-mono animate-pulse">5H</span>
+              </div>
+              <h3 class="font-semibold text-hextech-light text-sm mb-1 line-clamp-2 relative">Patch 14.24 Preview: Arena Returns</h3>
+              <p class="text-gray-400 text-xs line-clamp-2">The beloved 2v2v2v2 mode makes its comeback.</p>
+            </div>
+          </article>
+          
+          <!-- Loading -->
+          <div class="bg-void-card rounded-xl border-arcane overflow-hidden">
+            <div class="aspect-video skeleton-arcane relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-hextech/10 to-transparent animate-circuit-flow opacity-20"></div>
+            </div>
+            <div class="p-4 space-y-2 relative">
+              <div class="absolute inset-0 bg-gradient-to-br from-hextech/5 to-transparent pointer-events-none"></div>
+              <div class="flex gap-2">
+                <div class="h-4 w-12 skeleton-arcane rounded"></div>
+                <div class="h-4 w-10 skeleton-arcane rounded"></div>
+              </div>
+              <div class="h-4 skeleton-arcane rounded w-full"></div>
+              <div class="h-3 skeleton-arcane rounded w-3/4"></div>
+            </div>
+          </div>
+          
+          <!-- Empty -->
+          <div class="bg-void-card rounded-xl border-arcane overflow-hidden">
+            <div class="aspect-video bg-void flex items-center justify-center relative overflow-hidden">
+              <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%22120%222%20height%3D%22120%22%20viewBox%3D%220%200%20120%20120%22%3E%3Crect%20width%3D%22120%22%20height%3D%22120%22%20fill%3D%22none%22%20stroke%3D%22rgba(10%2C%202%2C%20185%2C%200.08)%22%20stroke-width%3D%2%22/%3E%3C/svg%3E')] opacity-15 animate-circuit-flow"></div>
+              <svg class="w-8 h-8 text-gray-600 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </div>
+            <div class="p-4 text-center relative">
+              <div class="absolute inset-0 bg-gradient-to-br from-hextech/5 to-transparent pointer-events-none"></div>
+              <p class="text-gray-500 text-xs">No article</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Compact Card (List) -->
+      <div>
+        <p class="text-xs font-mono text-hextech mb-3 tracking-wider">VARIANT: COMPACT (LIST VIEW)</p>
+        
+        <div class="space-y-2">
+          <!-- Default -->
+          <article class="bg-void-card rounded-lg border-arcane p-3 flex items-center gap-4 cursor-pointer card-arcane">
+            <div class="w-20 h-14 bg-gradient-to-br from-hextech/20 to-plasma/15 rounded flex-shrink-0 flex items-center justify-center relative overflow-hidden">
+              <svg class="w-6 h-6 text-hextech/30" fill="currentColor" viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2z"/></svg>
+              <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%22100%222%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22none%22%20stroke%3D%22rgba(10%2C%202%2C%20185%2C%200.1)%22%20stroke-width%3D%2%22/%3E%3C/svg%3E')] opacity-20 animate-circuit-flow"></div>
+            </div>
+            <div class="flex-1 min-w-0 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-hextech/5 to-transparent pointer-events-none"></div>
+              <div class="flex items-center gap-2 mb-1 relative">
+                <span class="px-1.5 py-0.5 bg-arcane-purple/30 text-arcane-purple text-[9px] font-bold rounded border border-arcane-purple/40 shadow-lg shadow-arcane-purple/30">LORE</span>
+                <span class="text-gray-500 text-[10px] font-mono">8H AGO</span>
+              </div>
+              <h3 class="font-semibold text-white text-sm truncate relative">Exploring Runeterra: The Shadow Isles' Dark History</h3>
+              <p class="text-gray-500 text-xs truncate relative">Deep dive into the lore behind Ruination</p>
+            </div>
+            <div class="text-hextech text-xs font-mono flex-shrink-0 animate-bounce">→</div>
+          </article>
+          
+          <!-- Hover -->
+          <article class="bg-surface border-2 border-hextech p-3 flex items-center gap-4 cursor-pointer card-arcane shadow-lg shadow-hextech/30">
+            <div class="w-20 h-14 bg-gradient-to-br from-hextech/30 to-plasma/25 rounded flex-shrink-0 flex items-center justify-center relative overflow-hidden">
+              <svg class="w-6 h-6 text-hextech/50" fill="currentColor" viewBox="0 0 24 24"><path d="M18 3a3 3 0 00-3 3v12a3 3 0 003 3 3 3 0 003-3 3 3 0 003-3H6a3 3 0 00-3 3 3 3 0 003 3 3 3 0 003-3V6a3 3 0 00-3-3 3 3 0 003 3h12a3 3 0 003-3 3 3 0 00-3-3z"/></svg>
+            </div>
+            <div class="flex-1 min-w-0 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-hextech/10 to-transparent pointer-events-none"></div>
+              <div class="flex items-center gap-2 mb-1 relative">
+                <span class="px-1.5 py-0.5 bg-arcane-pink/40 text-arcane-pink text-[9px] font-bold rounded border-2 border-arcane-pink/60 shadow-lg shadow-arcane-pink/40">MEDIA</span>
+                <span class="text-hextech text-[10px] font-mono animate-pulse">12H AGO</span>
+              </div>
+              <h3 class="font-semibold text-hextech-light text-sm truncate relative">New K/DA Music Video Drops — "MORE" Remix</h3>
+              <p class="text-gray-400 text-xs truncate relative">The virtual K-pop group returns with a fresh remix</p>
+            </div>
+            <div class="text-hextech-light text-xs font-mono flex-shrink-0 translate-x-1 animate-bounce">→</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 4: CATEGORY FILTER PILLS -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-arcane mb-8">
+        <h2 class="font-display text-2xl font-bold text-white">4. Category Filter Pills</h2>
+        <p class="text-gray-500 text-sm mt-1">Intense glow on active and hover states</p>
+      </div>
+      
+      <div class="space-y-6">
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">ALL STATES</p>
+          <div class="flex flex-wrap gap-3">
+            <!-- Active -->
+            <button class="px-4 py-2 rounded-full bg-gradient-to-r from-hextech to-plasma text-void border-2 border-hextech/60 font-semibold text-sm transition-all flex items-center gap-2 animate-glow-pulse-multi shadow-lg shadow-hextech/40">
+              <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+              All Feeds
+            </button>
+            
+            <!-- Inactive -->
+            <button class="px-4 py-2 rounded-full bg-void-medium/50 text-gray-400 border border-gray-700 font-semibold text-sm transition-all hover:border-hextech/40 hover:text-hextech flex items-center gap-2 hover:animate-glow-pulse-multi">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/><path d="M19 8a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              Esports
+            </button>
+            
+            <!-- Hover (shown as active hover state) -->
+            <button class="px-4 py-2 rounded-full bg-hextech/30 text-hextech-light border-2 border-hextech/80 font-semibold text-sm transition-all flex items-center gap-2 animate-glow-pulse-multi shadow-lg shadow-hextech/30">
+              <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg>
+              Dev Updates
+            </button>
+            
+            <!-- Disabled -->
+            <button class="px-4 py-2 rounded-full bg-void/30 text-gray-600 border border-gray-800 font-semibold text-sm flex items-center gap-2 cursor-not-allowed opacity-50">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              Patches
+            </button>
+          </div>
+        </div>
+        
+        <!-- Variants -->
+        <div class="grid md:grid-cols-3 gap-6">
+          <div>
+            <p class="text-xs text-gray-500 mb-3">With Icon</p>
+            <div class="flex flex-wrap gap-2">
+              <button class="px-3 py-1.5 rounded-full bg-gradient-to-r from-hextech to-plasma text-void border-2 border-hextech/50 text-sm flex items-center gap-1.5 animate-glow-pulse-multi shadow-lg shadow-hextech/30">
+                <svg class="w-3.5 h-3.5 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                LoL
+              </button>
+              <button class="px-3 py-1.5 rounded-full bg-void-medium/50 text-gray-400 border border-gray-700 text-sm flex items-center gap-1.5 hover:border-hextech/40 hover:text-hextech hover:animate-glow-pulse-multi">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4h4v4H4z"/></svg>
+                TFT
+              </button>
+            </div>
+          </div>
+          
+          <div>
+            <p class="text-xs text-gray-500 mb-3">Text Only</p>
+            <div class="flex flex-wrap gap-2">
+              <button class="px-3 py-1.5 rounded-full bg-gradient-to-r from-hextech to-plasma text-void border-2 border-hextech/50 text-sm animate-glow-pulse-multi shadow-lg shadow-hextech/30">All</button>
+              <button class="px-3 py-1.5 rounded-full bg-void-medium/50 text-gray-400 border border-gray-700 text-sm hover:border-hextech/40 hover:text-hextech hover:animate-glow-pulse-multi">News</button>
+              <button class="px-3 py-1.5 rounded-full bg-void-medium/50 text-gray-400 border border-gray-700 text-sm hover:border-hextech/40 hover:text-hextech hover:animate-glow-pulse-multi">Updates</button>
+            </div>
+          </div>
+          
+          <div>
+            <p class="text-xs text-gray-500 mb-3">With Count</p>
+            <div class="flex flex-wrap gap-2">
+              <button class="px-3 py-1.5 rounded-full bg-gradient-to-r from-hextech to-plasma text-void border-2 border-hextech/50 text-sm flex items-center gap-2 animate-glow-pulse-multi shadow-lg shadow-hextech/30">
+                All
+                <span class="px-1.5 py-0.5 bg-void/40 rounded text-xs font-mono">1.2K</span>
+              </button>
+              <button class="px-3 py-1.5 rounded-full bg-void-medium/50 text-gray-400 border border-gray-700 text-sm flex items-center gap-2 hover:border-hextech/40 hover:text-hextech hover:animate-glow-pulse-multi">
+                Esports
+                <span class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">342</span>
+              </button>
+              <button class="px-3 py-1.5 rounded-full bg-void-medium/50 text-gray-400 border border-gray-700 text-sm flex items-center gap-2 hover:border-hextech/40 hover:text-hextech hover:animate-glow-pulse-multi">
+                Dev
+                <span class="px-1.5 py-0.5 bg-gray-700 rounded text-xs font-mono">128</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 5: SIDEBAR STATS PANEL -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-arcane mb-8">
+        <h2 class="font-display text-2xl font-bold text-white">5. Sidebar — Stats Panel</h2>
+        <p class="text-gray-500 text-sm mt-1">Animated sparklines and intense glow</p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Live Data -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: LIVE DATA</p>
+          <div class="bg-void-card rounded-xl border-arcane p-4 max-w-xs animate-glow-pulse-multi">
+            <h3 class="font-display text-sm font-bold text-hextech mb-4 flex items-center gap-2">
+              <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+              LIVE STATISTICS
+            </h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center py-2 border-b-2 border-hextech/10">
+                <span class="text-gray-400 text-sm">Active Players</span>
+                <span class="font-mono text-hextech font-bold text-hextech-light animate-pulse">847.2K</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b-2 border-hextech/10">
+                <span class="text-gray-400 text-sm">Live Matches</span>
+                <span class="font-mono text-pulse font-bold animate-pulse shadow-lg shadow-pulse/50">12,847</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b-2 border-hextech/10">
+                <span class="text-gray-400 text-sm">Patch Version</span>
+                <span class="font-mono text-plasma font-bold animate-pulse shadow-lg shadow-plasma/50">14.23</span>
+              </div>
+              <div class="flex justify-between items-center py-2">
+                <span class="text-gray-400 text-sm">Server Status</span>
+                <span class="flex items-center gap-2 text-pulse text-sm font-semibold">
+                  <span class="w-2 h-2 bg-pulse rounded-full animate-ping shadow-lg shadow-pulse/50"></span>
+                  <span class="animate-pulse">ONLINE</span>
+                </span>
+              </div>
+            </div>
+            <!-- Animated Sparkline -->
+            <div class="mt-4 pt-4 border-t-2 border-hextech/10 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-hextech/10 to-transparent pointer-events-none"></div>
+              <p class="text-xs text-gray-500 mb-2">Players (24h)</p>
+              <svg class="w-full h-10" viewBox="0 0 100 30">
+                <defs>
+                  <linearGradient id="sparklineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#0AC8B9;stop-opacity:0.6"/>
+                    <stop offset="100%" style="stop-color:#0AC8B9;stop-opacity:0"/>
+                  </linearGradient>
+                </defs>
+                <polyline fill="url(#sparklineGradient)" stroke="#0AC8B9" stroke-width="2" points="0,25 10,18 20,22 30,12 40,15 50,8 60,10 70,5 80,7 90,3 100,2" style="filter: drop-shadow(0 0 4px rgba(10, 200, 185, 0.5));"/>
+                <circle cx="100" cy="2" r="3" fill="#0AC8B9" style="filter: drop-shadow(0 0 8px rgba(10, 200, 185, 0.6));" class="animate-pulse"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Loading -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: LOADING</p>
+          <div class="bg-void-card rounded-xl border-arcane p-4 max-w-xs">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="w-4 h-4 skeleton-arcane rounded"></div>
+              <div class="h-4 w-24 skeleton-arcane rounded"></div>
+            </div>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center py-2 border-b-2 border-hextech/10">
+                <div class="h-4 w-20 skeleton-arcane rounded"></div>
+                <div class="h-4 w-16 skeleton-arcane rounded"></div>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b-2 border-hextech/10">
+                <div class="h-4 w-20 skeleton-arcane rounded"></div>
+                <div class="h-4 w-12 skeleton-arcane rounded"></div>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b-2 border-hextech/10">
+                <div class="h-4 w-20 skeleton-arcane rounded"></div>
+                <div class="h-4 w-10 skeleton-arcane rounded"></div>
+              </div>
+              <div class="flex justify-between items-center py-2">
+                <div class="h-4 w-20 skeleton-arcane rounded"></div>
+                <div class="h-4 w-14 skeleton-arcane rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Error -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: ERROR</p>
+          <div class="bg-void-card rounded-xl border-2 border-red-500/50 p-4 max-w-xs animate-glow-pulse-multi">
+            <h3 class="font-display text-sm font-bold text-red-400 mb-4 flex items-center gap-2">
+              <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              STATS UNAVAILABLE
+            </h3>
+            <div class="text-center py-4 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent pointer-events-none"></div>
+              <p class="text-gray-500 text-sm mb-3">Failed to load statistics</p>
+              <button class="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg text-sm font-medium hover:from-red-600 hover:to-red-700 transition-all shadow-lg shadow-red-500/30">
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 6-15 (Compact for Arcane) -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-arcane mb-8">
+        <h2 class="font-display text-2xl font-bold text-white">6. Sidebar — Categories</h2>
+        <p class="text-gray-500 text-sm mt-1">Intense hover glow and selection effects</p>
+      </div>
+      
+      <div class="grid md:grid-cols-4 gap-6">
+        <!-- Default -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: DEFAULT</p>
+          <div class="bg-void-card rounded-xl border-arcane p-4 max-w-xs animate-glow-pulse-multi">
+            <h3 class="font-display text-sm font-bold text-hextech mb-4">CATEGORIES</h3>
+            <div class="space-y-1">
+              <a href="#" class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-hextech/20 transition-all hover:border hover:animate-glow-pulse-multi">
+                <span class="text-gray-300">Esports</span>
+                <span class="text-xs font-mono text-hextech/60 bg-hextech/20 px-2 py-0.5 rounded border border-hextech/40">342</span>
+              </a>
+              <a href="#" class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-hextech/20 transition-all">
+                <span class="text-gray-300">Dev Updates</span>
+                <span class="text-xs font-mono text-hextech/60 bg-hextech/20 px-2 py-0.5 rounded border border-hextech/40">128</span>
+              </a>
+              <a href="#" class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-hextech/20 transition-all">
+                <span class="text-gray-300">Patch Notes</span>
+                <span class="text-xs font-mono text-hextech/60 bg-hextech/20 px-2 py-0.5 rounded border border-hextech/40">89</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Selected -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: SELECTED</p>
+          <div class="bg-void-card rounded-xl border-arcane p-4 max-w-xs">
+            <h3 class="font-display text-sm font-bold text-hextech mb-4">CATEGORIES</h3>
+            <div class="space-y-1">
+              <a href="#" class="flex items-center justify-between py-2 px-3 rounded-lg bg-gradient-to-r from-hextech/30 to-plasma/30 border-l-4 border-hextech animate-glow-pulse-multi shadow-lg shadow-hextech/30">
+                <span class="text-hextech font-bold">Esports</span>
+                <span class="text-xs font-mono text-hextech bg-hextech/40 px-2 py-0.5 rounded border-2 border-hextech/60 animate-pulse">342</span>
+              </a>
+              <a href="#" class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-hextech/20 transition-all">
+                <span class="text-gray-300">Dev Updates</span>
+                <span class="text-xs font-mono text-hextech/60 bg-hextech/20 px-2 py-0.5 rounded border border-hextech/40">128</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Empty -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: EMPTY</p>
+          <div class="bg-void-card rounded-xl border-arcane p-4 max-w-xs animate-glow-pulse-multi">
+            <h3 class="font-display text-sm font-bold text-hextech mb-4">CATEGORIES</h3>
+            <div class="text-center py-6 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-hextech/10 to-transparent pointer-events-none"></div>
+              <svg class="w-8 h-8 text-gray-600 mx-auto mb-2 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+              </svg>
+              <p class="text-gray-500 text-sm">No categories</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 7-15 (Combined Compact View) -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-arcane mb-8">
+        <h2 class="font-display text-2xl font-bold text-white">7. Sidebar — Trending</h2>
+        <p class="text-gray-500 text-sm mt-1">Animated glow on trending items</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: DEFAULT</p>
+          <div class="bg-void-card rounded-xl border-arcane p-4 max-w-xs animate-glow-pulse-multi">
+            <h3 class="font-display text-sm font-bold text-hextech mb-4 flex items-center gap-2">
+              <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M17.66 11.2C17.43 10.9 17.15 10.64 16.89 10.38C16.22 9.78 15.46 9.35 14.82 8.72C13.33 7.26 13 4.85 13.95 3C13 3.23 12.17 3.75 11.46 4.32C8.87 6.4 7.85 10.07 9.07 13.22C9.11 13.32 9.15 13.42 9.15 13.55C9.15 13.77 9 13.97 8.8 14.05C8.57 14.15 8.33 14.09 8.14 13.93C8.08 13.88 8.04 13.83 8 13.76C6.87 12.33 6.69 10.28 7.45 8.64C5.78 10 4.87 12.3 5 14.47C5.06 14.97 5.12 15.47 5.29 15.97C5.43 16.57 5.7 17.17 6 17.7C7.08 19.43 8.95 20.67 10.96 20.92C13.1 21.19 15.39 20.8 17.03 19.32C18.86 17.66 19.5 15 18.56 12.72L18.43 12.46C18.22 12 17.66 11.2 17.66 11.2Z"/></svg>
+              TRENDING
+            </h3>
+            <div class="space-y-3">
+              <a href="#" class="block group">
+                <div class="flex items-start gap-3">
+                  <span class="text-hextech font-mono font-bold text-sm w-6 animate-pulse">01</span>
+                  <div>
+                    <p class="text-sm text-gray-300 group-hover:text-hextech transition-colors line-clamp-2">T1 Faker breaks all-time kill record at Worlds</p>
+                    <span class="text-xs text-gray-500">2.4K views</span>
+                  </div>
+                </div>
+              </a>
+              <a href="#" class="block group">
+                <div class="flex items-start gap-3">
+                  <span class="text-hextech font-mono font-bold text-sm w-6 animate-pulse" style="animation-delay: 0.2s">02</span>
+                  <div>
+                    <p class="text-sm text-gray-300 group-hover:text-hextech transition-colors line-clamp-2">New champion Ambessa revealed</p>
+                    <span class="text-xs text-gray-500">1.8K views</span>
+                  </div>
+                </div>
+              </a>
+              <a href="#" class="block group">
+                <div class="flex items-start gap-3">
+                  <span class="text-hextech font-mono font-bold text-sm w-6 animate-pulse" style="animation-delay: 0.4s">03</span>
+                  <div>
+                    <p class="text-sm text-gray-300 group-hover:text-hextech transition-colors line-clamp-2">Arcane Season 2 release date confirmed</p>
+                    <span class="text-xs text-gray-500">1.5K views</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: LOADING</p>
+          <div class="bg-void-card rounded-xl border-arcane p-4 max-w-xs">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="w-4 h-4 skeleton-arcane rounded"></div>
+              <div class="h-4 w-20 skeleton-arcane rounded"></div>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-start gap-3">
+                <div class="w-6 h-4 skeleton-arcane rounded"></div>
+                <div class="flex-1 space-y-1">
+                  <div class="h-4 skeleton-arcane rounded w-full"></div>
+                  <div class="h-3 skeleton-arcane rounded w-16"></div>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="w-6 h-4 skeleton-arcane rounded"></div>
+                <div class="flex-1 space-y-1">
+                  <div class="h-4 skeleton-arcane rounded w-3/4"></div>
+                  <div class="h-3 skeleton-arcane rounded w-12"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">STATE: EMPTY</p>
+          <div class="bg-void-card rounded-xl border-arcane p-4 max-w-xs animate-glow-pulse-multi">
+            <h3 class="font-display text-sm font-bold text-hextech mb-4">TRENDING</h3>
+            <div class="text-center py-6 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-hextech/10 to-transparent pointer-events-none"></div>
+              <svg class="w-8 h-8 text-gray-600 mx-auto mb-2 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0 0l-8 8-4-4-6 6"/>
+              </svg>
+              <p class="text-gray-500 text-sm">No trending articles</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 8-15 (Remaining Components - Arcane Style) -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-arcane mb-8">
+        <h2 class="font-display text-2xl font-bold text-white">8-15. Remaining Components</h2>
+        <p class="text-gray-500 text-sm mt-1">All with Arcane Overload effects</p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Locale Switcher -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">8. LOCALE SWITCHER</p>
+          <div class="inline-block">
+            <button class="flex items-center gap-2 px-3 py-2 rounded-lg bg-void/50 border-2 border-hextech/40 text-sm font-medium hover:border-hextech animate-glow-pulse-multi transition-all">
+              <span class="text-lg animate-bounce">🇺🇸</span>
+              <span class="text-hextech glitch-arcane" data-text="EN">EN</span>
+              <svg class="w-4 h-4 text-hextech/60 animate-rotate-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+          </div>
+          <div class="mt-4 grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-xs text-gray-500 mb-2">With Dropdown</p>
+              <div class="relative inline-block">
+                <button class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-hextech/20 to-plasma/20 border-2 border-hextech/60 text-sm font-medium">
+                  <span class="text-lg animate-bounce">🇺🇸</span>
+                  <span class="text-hextech">EN</span>
+                </button>
+                <div class="absolute left-0 top-full mt-2 w-40 bg-void-medium border-2 border-hextech/50 rounded-lg shadow-2xl shadow-hextech/20 z-10 animate-glow-pulse-multi">
+                  <div class="p-2 space-y-1 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-hextech/10 to-transparent pointer-events-none"></div>
+                    <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md bg-hextech/30 text-hextech border border-hextech/60">
+                      <span>🇺🇸</span><span class="text-sm">English</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-hextech/20 transition-all text-gray-300">
+                      <span>🇰🇷</span><span class="text-sm">한국어</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-hextech/20 transition-all text-gray-300">
+                      <span>🇯🇵</span><span class="text-sm">日本語</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Search -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">9. SEARCH</p>
+          <div class="relative">
+            <input type="text" placeholder="Search articles..." class="w-full bg-void/50 border-2 border-hextech/30 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-hextech animate-glow-pulse-multi transition-all">
+            <svg class="w-5 h-5 text-hextech/60 absolute left-3 top-1/2 -translate-y-1/2 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Buttons -->
+        <div class="md:col-span-2">
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">12. BUTTONS & CTAs</p>
+          <div class="flex flex-wrap items-center gap-4">
+            <button class="px-6 py-3 bg-gradient-to-r from-hextech to-plasma text-void font-semibold text-base rounded-lg animate-glow-pulse-multi shadow-lg shadow-hextech/40 border-2 border-hextech/60 hover:from-hextech-light hover:to-plasma-light transition-all">Primary</button>
+            <button class="px-6 py-3 bg-void-medium text-hextech font-semibold text-base rounded-lg border-2 border-hextech/50 hover:border-hextech hover:bg-hextech/20 transition-all animate-glow-pulse-multi shadow-lg shadow-hextech/20">Secondary</button>
+            <button class="px-6 py-3 text-hextech font-semibold text-base rounded-lg hover:bg-hextech/20 transition-all animate-glow-pulse-multi">Ghost</button>
+            <button class="px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold text-base rounded-lg animate-glow-pulse-multi shadow-lg shadow-red-500/40 border-2 border-red-600/60 hover:from-red-600 hover:to-red-700 transition-all">Danger</button>
+          </div>
+        </div>
+        
+        <!-- Toast -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">13. TOAST</p>
+          <div class="space-y-3">
+            <div class="bg-pulse/20 border-2 border-pulse/50 rounded-lg p-4 flex items-start gap-3 animate-glow-pulse-multi shadow-lg shadow-pulse/30">
+              <svg class="w-5 h-5 text-pulse flex-shrink-0 mt-0.5 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              <div class="flex-1">
+                <p class="text-sm text-white font-medium">Article saved successfully</p>
+                <p class="text-xs text-gray-400 mt-0.5">Added to your reading list</p>
+              </div>
+              <button class="px-2 py-1 bg-pulse/40 text-pulse border border-pulse/60 rounded text-xs font-medium hover:bg-pulse/50 transition-all">×</button>
+            </div>
+            
+            <div class="bg-red-500/20 border-2 border-red-500/50 rounded-lg p-4 flex items-start gap-3 animate-glow-pulse-multi shadow-lg shadow-red-500/30">
+              <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+              </svg>
+              <div class="flex-1">
+                <p class="text-sm text-white font-medium">Failed to load articles</p>
+                <p class="text-xs text-gray-400 mt-0.5">Please check your connection</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Loading States -->
+        <div>
+          <p class="text-xs font-mono text-hextech mb-3 tracking-wider">14. LOADING STATES</p>
+          <div class="space-y-4">
+            <div class="bg-void-card rounded-xl border-arcane p-6">
+              <div class="flex items-center justify-center gap-3 mb-4">
+                <svg class="w-8 h-8 text-hextech animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="text-hextech text-sm font-medium animate-pulse">Loading content...</p>
+              </div>
+              <div class="h-2 bg-void-medium rounded-full overflow-hidden relative">
+                <div class="h-full bg-gradient-to-r from-hextech via-plasma to-pulse rounded-full w-2/3 animate-circuit-flow shadow-lg shadow-hextech/50"></div>
+              </div>
+              <p class="text-center text-hextech text-xs font-mono mt-2">67%</p>
+            </div>
+            
+            <div class="bg-void-card rounded-xl border-arcane p-6">
+              <div class="flex items-center justify-center gap-2">
+                <div class="w-2 h-2 bg-hextech rounded-full animate-bounce shadow-lg shadow-hextech/50"></div>
+                <div class="w-2 h-2 bg-hextech rounded-full animate-bounce shadow-lg shadow-hextech/50" style="animation-delay: 0.15s"></div>
+                <div class="w-2 h-2 bg-hextech rounded-full animate-bounce shadow-lg shadow-hextech/50" style="animation-delay: 0.3s"></div>
+                <p class="text-gray-400 text-sm">Connecting...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- FOOTER -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <footer class="mt-20 pt-8 border-t-2 border-hextech/20 text-center relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-r from-hextech/5 via-transparent to-plasma/5 pointer-events-none"></div>
+      <p class="text-gray-500 text-sm font-mono relative">
+        LoLStonks Design System — <span class="text-hextech glitch-arcane animate-pulse" data-text="HEXTECH ARCANE OVERLOAD">HEXTECH ARCANE OVERLOAD</span>
+      </p>
+      <p class="text-gray-600 text-xs mt-2 relative">Variante B — Massimo effetto visivo, ispirato all'estetica di Arcane</p>
+      <div class="mt-4 flex items-center justify-center gap-4 relative">
+        <div class="w-12 h-1 bg-gradient-to-r from-hextech to-plasma rounded-full animate-pulse"></div>
+        <div class="w-12 h-1 bg-gradient-to-r from-plasma to-pulse rounded-full animate-pulse" style="animation-delay: 0.3s"></div>
+        <div class="w-12 h-1 bg-gradient-to-r from-pulse to-hextech rounded-full animate-pulse" style="animation-delay: 0.6s"></div>
+      </div>
+    </footer>
+    
+  </div>
+
+  <!-- Particle Script -->
+  <script>
+    // Generate intense floating particles
+    const particlesContainer = document.getElementById('particles');
+    const colors = ['#0AC8B9', '#8B5CF6', '#00FF88', '#FF6B9D', '#FFD700'];
+    for (let i = 0; i < 50; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      const size = Math.random() * 4 + 2;
+      particle.style.width = size + 'px';
+      particle.style.height = size + 'px';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.top = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 8 + 's';
+      particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      particle.style.boxShadow = `0 0 ${size}px ${particle.style.backgroundColor}`;
+      particlesContainer.appendChild(particle);
+    }
+  </script>
+</body>
+</html>
