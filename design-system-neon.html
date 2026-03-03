@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoLStonks Design System — Hextech Neon Terminal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            terminal: {
+              bg: '#0D1117',
+              fg: '#00FF41',
+              dim: '#008F11',
+              bright: '#00FF41',
+              accent: '#00FF41',
+              warning: '#FFFF00',
+              error: '#FF0000',
+              border: '#008F11',
+              scanline: 'rgba(0, 255, 65, 0.03)',
+            },
+            hextech: {
+              DEFAULT: '#0AC8B9',
+              dim: '#067A71',
+            },
+            void: {
+              DEFAULT: '#000000',
+            }
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'monospace'],
+            display: ['JetBrains Mono', 'monospace'],
+          },
+          animation: {
+            'blink': 'blink 1s step-end infinite',
+            'cursor-pulse': 'cursorPulse 0.8s ease-in-out infinite',
+            'scanline-scroll': 'scanlineScroll 10s linear infinite',
+            'flicker': 'flicker 0.1s infinite',
+            'typewriter': 'typewriter 0.05s steps(10) infinite',
+          },
+          keyframes: {
+            blink: {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '0' },
+            },
+            cursorPulse: {
+              '0%, 100%': { backgroundColor: '#00FF41', opacity: '1' },
+              '50%': { backgroundColor: '#00FF41', opacity: '0.7' },
+            },
+            scanlineScroll: {
+              '0%': { transform: 'translateY(0)' },
+              '100%': { transform: 'translateY(100%)' },
+            },
+            flicker: {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '0.97' },
+            },
+            typewriter: {
+              '0%, 100%': { borderRightColor: 'transparent' },
+              '50%': { borderRightColor: '#00FF41' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    /* CRT Terminal Effect */
+    .crt-terminal {
+      background-color: #0D1117;
+      color: #00FF41;
+      font-family: 'JetBrains Mono', monospace;
+      position: relative;
+    }
+    
+    /* Scanline Effect */
+    .scanlines::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 255, 65, 0) 50%,
+        rgba(0, 0, 0, 0.2) 50%
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 1000;
+      animation: scanlineScroll 10s linear infinite;
+    }
+    
+    /* Terminal Border */
+    .border-terminal {
+      border: 2px solid #008F11;
+      box-shadow: 
+        0 0 0 1px #008F11,
+        inset 0 0 0 1px #008F11;
+    }
+    
+    /* Glowing Text */
+    .text-glow {
+      text-shadow: 
+        0 0 5px #00FF41,
+        0 0 10px #00FF41,
+        0 0 20px rgba(0, 255, 65, 0.5);
+    }
+    
+    /* Cursor */
+    .cursor-blink {
+      display: inline-block;
+      width: 10px;
+      height: 1em;
+      background-color: #00FF41;
+      animation: blink 1s step-end infinite;
+    }
+    
+    /* ASCII Art Container */
+    .ascii-art {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      line-height: 1.2;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 12px; }
+    ::-webkit-scrollbar-track { background: #000000; }
+    ::-webkit-scrollbar-thumb { 
+      background: #008F11; 
+      border: 2px solid #00FF41;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: #00FF41; }
+    
+    /* Focus Ring */
+    .focus-ring-terminal:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #0D1117, 0 0 0 4px #00FF41, 0 0 15px rgba(0, 255, 65, 0.4);
+    }
+    
+    /* Section Marker */
+    .section-marker-terminal {
+      position: relative;
+      padding-left: 1.5rem;
+      border-left: 3px solid #00FF41;
+    }
+    
+    /* Card Hover */
+    .card-terminal {
+      transition: all 0.3s ease;
+    }
+    .card-terminal:hover {
+      border-color: #00FF41;
+      box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+    }
+    
+    /* Button Styles */
+    .btn-terminal {
+      border: 2px solid #008F11;
+      background: transparent;
+      color: #00FF41;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.2s ease;
+    }
+    .btn-terminal:hover {
+      background: #00FF41;
+      color: #0D1117;
+      border-color: #00FF41;
+      box-shadow: 0 0 15px rgba(0, 255, 65, 0.4);
+    }
+    .btn-terminal:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    
+    /* Skeleton Animation */
+    .skeleton-terminal {
+      background: repeating-linear-gradient(
+        90deg,
+        #0D1117,
+        #0D1117 1px,
+        #1a2a1a 1px,
+        #0D1117 2px
+      );
+      animation: flicker 0.1s infinite;
+    }
+    
+    /* Flicker Effect for Loading */
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.97; }
+    }
+  </style>
+</head>
+<body class="crt-terminal scanlines min-h-screen text-white font-mono">
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- DESIGN TOKENS SECTION -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  
+  <div class="max-w-7xl mx-auto px-4 py-12">
+    
+    <!-- Header -->
+    <header class="mb-16 text-center">
+      <div class="inline-block border-terminal px-4 py-2 mb-6">
+        <span class="text-terminal-accent font-bold">◆</span>
+        <span class="text-terminal-accent ml-2">NEON TERMINAL</span>
+        <span class="cursor-blink"></span>
+      </div>
+      <h1 class="font-display text-4xl md:text-5xl font-bold mb-4 text-glow">
+        &lt;HEXTECH /&gt;
+      </h1>
+      <p class="text-terminal-dim max-w-2xl mx-auto text-sm">
+        Variante C — Hacker/Termale style. Monospace-heavy, Matrix-green dominant.
+        <span class="text-terminal-accent block mt-2">Zaun hacker terminal aesthetic.</span>
+      </p>
+    </header>
+
+    <!-- Design Tokens -->
+    <section class="mb-20">
+      <div class="section-marker-terminal mb-8">
+        <h2 class="font-mono text-2xl font-bold text-white">[01] DESIGN_TOKENS</h2>
+        <p class="text-terminal-dim text-sm mt-1">Foundation colors and typography</p>
+      </div>
+      
+      <!-- Colors -->
+      <div class="border-terminal bg-terminal-bg rounded-lg p-6 mb-6">
+        <h3 class="font-mono text-sm font-bold text-terminal-accent mb-6">/// COLOR PALETTE</h3>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+          <div class="border-terminal p-3">
+            <div class="h-20 bg-terminal-fg mb-2"></div>
+            <p class="text-xs text-terminal-accent">TERMINAL_FG</p>
+            <p class="text-xs text-terminal-dim">#00FF41</p>
+          </div>
+          <div class="border-terminal p-3">
+            <div class="h-20 bg-terminal-dim mb-2"></div>
+            <p class="text-xs text-terminal-accent">TERMINAL_DIM</p>
+            <p class="text-xs text-terminal-dim">#008F11</p>
+          </div>
+          <div class="border-terminal p-3">
+            <div class="h-20 bg-terminal-warning mb-2"></div>
+            <p class="text-xs text-terminal-accent">TERMINAL_WARN</p>
+            <p class="text-xs text-terminal-dim">#FFFF00</p>
+          </div>
+          <div class="border-terminal p-3">
+            <div class="h-20 bg-terminal-error mb-2"></div>
+            <p class="text-xs text-terminal-accent">TERMINAL_ERR</p>
+            <p class="text-xs text-terminal-dim">#FF0000</p>
+          </div>
+          <div class="border-terminal p-3">
+            <div class="h-20 bg-hextech mb-2"></div>
+            <p class="text-xs text-terminal-accent">HEXTECH</p>
+            <p class="text-xs text-terminal-dim">#0AC8B9</p>
+          </div>
+          <div class="border-terminal p-3">
+            <div class="h-20 bg-void DEFAULT mb-2"></div>
+            <p class="text-xs text-terminal-accent">VOID_BLACK</p>
+            <p class="text-xs text-terminal-dim">#000000</p>
+          </div>
+        </div>
+        
+        <!-- Background Colors -->
+        <h4 class="text-xs text-terminal-accent mb-4">/// BACKGROUNDS</h4>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="border-terminal p-3">
+            <div class="h-20 bg-terminal-bg"></div>
+            <p class="text-xs text-terminal-accent">TERMINAL_BG</p>
+            <p class="text-xs text-terminal-dim">#0D1117</p>
+          </div>
+          <div class="border-terminal p-3">
+            <div class="h-20 bg-void DEFAULT border-2 border-terminal-border"></div>
+            <p class="text-xs text-terminal-accent">VOID_BLACK</p>
+            <p class="text-xs text-terminal-dim">#000000</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Typography -->
+      <div class="border-terminal bg-terminal-bg rounded-lg p-6 mb-6">
+        <h3 class="font-mono text-sm font-bold text-terminal-accent mb-6">/// TYPOGRAPHY</h3>
+        
+        <div class="space-y-4">
+          <div class="border-terminal p-4">
+            <p class="text-xs text-terminal-dim mb-2">[DISPLAY] JetBrains Mono</p>
+            <p class="text-2xl text-terminal-accent">ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+            <p class="text-2xl text-terminal-accent">abcdefghijklmnopqrstuvwxyz</p>
+            <p class="text-2xl text-terminal-accent">0123456789!@#$%^&*()</p>
+          </div>
+          
+          <div class="border-terminal p-4">
+            <p class="text-xs text-terminal-dim mb-2">[BODY] JetBrains Mono</p>
+            <p class="text-base text-white">The quick brown fox jumps over the lazy dog.</p>
+          </div>
+          
+          <div class="border-terminal p-4">
+            <p class="text-xs text-terminal-dim mb-2">[MONO] JetBrains Mono</p>
+            <p class="text-sm text-terminal-dim">const data = { value: 42 }; // Terminal style</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Type Scale -->
+      <div class="border-terminal bg-terminal-bg rounded-lg p-6">
+        <h3 class="font-mono text-sm font-bold text-terminal-accent mb-6">/// TYPE SCALE</h3>
+        <div class="space-y-2">
+          <div class="flex items-center gap-4">
+            <span class="w-24 text-xs text-terminal-dim">[XS] 10px</span>
+            <span class="text-xs text-white">The quick brown fox jumps over the lazy dog.</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="w-24 text-xs text-terminal-dim">[SM] 12px</span>
+            <span class="text-sm text-white">The quick brown fox jumps over the lazy dog.</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="w-24 text-xs text-terminal-dim">[BASE] 14px</span>
+            <span class="text-base text-white">The quick brown fox jumps over the lazy dog.</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="w-24 text-xs text-terminal-dim">[LG] 16px</span>
+            <span class="text-lg text-white">The quick brown fox jumps over the lazy dog.</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="w-24 text-xs text-terminal-dim">[XL] 20px</span>
+            <span class="text-xl text-white">The quick brown fox</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 1: HEADER/NAVBAR -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-terminal mb-8">
+        <h2 class="font-mono text-2xl font-bold text-white">[02] HEADER_NAVBAR</h2>
+        <p class="text-terminal-dim text-sm mt-1">Terminal-style navigation with ASCII elements</p>
+      </div>
+      
+      <!-- State: Default -->
+      <div class="mb-8">
+        <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">/// STATE: DEFAULT</p>
+        <div class="border-terminal bg-terminal-bg rounded-lg overflow-hidden">
+          <header class="border-b-2 border-terminal-border">
+            <div class="px-4 sm:px-6">
+              <div class="flex items-center justify-between h-14">
+                <!-- ASCII Logo -->
+                <div class="flex items-center gap-4">
+                  <div class="ascii-art text-terminal-accent">
+    ┌─────────┐
+    │   [H]   │
+    │  LO°L   │
+    │  (|)     │
+    │   / \    │
+    └─────────┘
+                  </div>
+                  <div>
+                    <h1 class="font-mono font-bold text-lg tracking-wider">
+                      <span class="text-terminal-accent text-glow">&lt;</span><span class="text-white">LoL</span><span class="text-hextech">Stonks</span><span class="text-terminal-accent text-glow">/&gt;</span>
+                    </h1>
+                    <p class="text-[10px] text-terminal-dim font-mono tracking-widest">
+                      [SYSTEM: ONLINE]<span class="cursor-blink"></span>
+                    </p>
+                  </div>
+                </div>
+                
+                <!-- Game Selector (ASCII) -->
+                <div class="hidden md:flex items-center gap-2 bg-void/80 rounded p-2 border-terminal">
+                  <button class="px-3 py-1 bg-terminal-fg text-terminal-bg font-semibold text-sm border-terminal">[LOL]</button>
+                  <button class="px-3 py-1 text-terminal-dim font-semibold text-sm">[TFT]</button>
+                  <button class="px-3 py-1 text-terminal-dim font-semibold text-sm">[WR]</button>
+                </div>
+                
+                <!-- Right Section -->
+                <div class="flex items-center gap-3">
+                  <button class="btn-terminal px-3 py-2 font-mono text-sm">
+                    [🇺🇸 EN ▼]
+                  </button>
+                  <button class="btn-terminal px-3 py-2 font-mono text-sm">
+                    [🔍 SEARCH]
+                  </button>
+                  <button class="md:hidden btn-terminal px-3 py-2 font-mono text-sm">
+                    [☰ MENU]
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
+        </div>
+      </div>
+      
+      <!-- State: Scrolled/Sticky -->
+      <div class="mb-8">
+        <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">/// STATE: SCROLLED</p>
+        <div class="border-terminal bg-terminal-bg rounded-lg overflow-hidden">
+          <header class="border-b-2 border-terminal-fg">
+            <div class="px-4 sm:px-6">
+              <div class="flex items-center justify-between h-12">
+                <div class="flex items-center gap-3">
+                  <div class="ascii-art text-xs text-terminal-accent">
+    ╔═══════╗
+    │   [H]  │
+    ╚═══════╝
+                  </div>
+                  <span class="font-mono font-bold text-sm tracking-wider">
+                    <span class="text-terminal-accent">&lt;</span><span class="text-white">LoLStonks</span><span class="text-terminal-accent">/&gt;</span>
+                  </span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button class="btn-terminal px-3 py-1 font-mono text-sm">
+                    [🔍]
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
+        </div>
+      </div>
+      
+      <!-- State: Mobile Menu Open -->
+      <div class="mb-8">
+        <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">/// STATE: MOBILE_MENU [375px]</p>
+        <div class="w-[375px] border-terminal bg-terminal-bg rounded-lg overflow-hidden">
+          <header class="border-b-2 border-terminal-border">
+            <div class="px-4">
+              <div class="flex items-center justify-between h-14">
+                <div class="flex items-center gap-3">
+                  <div class="ascii-art text-xs text-terminal-accent">
+    ╔═══════╗
+    │   [H]  │
+    ╚═══════╝
+                  </div>
+                  <span class="font-mono font-bold text-sm text-white">LoLStonks</span>
+                </div>
+                <button class="btn-terminal px-3 py-1 font-mono text-sm">
+                  [✕]
+                </button>
+              </div>
+            </div>
+            <div class="px-4 py-2 border-t-2 border-terminal-dim">
+              <div class="space-y-1">
+                <button class="w-full text-left btn-terminal px-3 py-2 font-mono text-sm mb-1">
+                  [1] LoL League of Legends
+                </button>
+                <button class="w-full text-left btn-terminal px-3 py-2 font-mono text-sm mb-1">
+                  [2] TFT Teamfight Tactics
+                </button>
+                <button class="w-full text-left btn-terminal px-3 py-2 font-mono text-sm mb-1">
+                  [3] WR Wild Rift
+                </button>
+                <div class="ascii-art text-xs text-terminal-dim text-center py-2">
+    ═══════════════════════════
+                  </div>
+                <input type="text" placeholder="_SEARCH_" class="w-full bg-void/50 border-2 border-terminal-border px-3 py-2 text-sm text-terminal-fg placeholder-terminal-dim font-mono focus:outline-none focus:border-terminal-fg">
+              </div>
+            </div>
+          </header>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 2: STATUS BAR -->
+    <!-- ═════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-terminal mb-8">
+        <h2 class="font-mono text-2xl font-bold text-white">[03] STATUS_BAR</h2>
+        <p class="text-terminal-dim text-sm mt-1">System status with terminal indicators</p>
+      </div>
+      
+      <div class="space-y-6">
+        <!-- State: Connected -->
+        <div>
+          <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">/// STATE: CONNECTED</p>
+          <div class="border-terminal bg-terminal-bg rounded-lg overflow-hidden">
+            <div class="border-b-2 border-terminal-dim py-2 px-4">
+              <div class="flex items-center justify-between text-xs font-mono text-white">
+                <div class="flex items-center gap-6">
+                  <span class="flex items-center gap-2">
+                    <span class="text-terminal-accent">●</span>
+                    <span class="text-terminal-fg">[LIVE_DATA]</span>
+                  </span>
+                  <span>PATCH <span class="text-terminal-accent">14.23</span></span>
+                  <span class="hidden sm:inline">LAST_SYNC: <span class="text-terminal-accent">2s_AGO</span></span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="hidden sm:inline">FEEDS: <span class="text-terminal-accent">12</span></span>
+                  <span class="hidden sm:inline">ARTICLES: <span class="text-terminal-accent">1,247</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- State: Syncing -->
+        <div>
+          <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">/// STATE: SYNCING</p>
+          <div class="border-terminal bg-terminal-bg rounded-lg overflow-hidden">
+            <div class="border-b-2 border-terminal-dim py-2 px-4">
+              <div class="flex items-center justify-between text-xs font-mono text-white">
+                <div class="flex items-center gap-6">
+                  <span class="flex items-center gap-2">
+                    <span class="text-hextech">◐</span>
+                    <span class="text-hextech animate-pulse">[SYNCING...]</span>
+                  </span>
+                  <span>PATCH <span class="text-hextech">14.23</span></span>
+                </div>
+                <div class="flex items-center gap-4">
+                  <span class="hidden sm:inline">FEEDS: <span class="text-hextech">12</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- State: Offline -->
+        <div>
+          <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">/// STATE: OFFLINE</p>
+          <div class="border-2 border-terminal-warning bg-terminal-bg rounded-lg overflow-hidden">
+            <div class="border-b-2 border-terminal-warning py-2 px-4">
+              <div class="flex items-center justify-between text-xs font-mono text-white">
+                <div class="flex items-center gap-6">
+                  <span class="flex items-center gap-2">
+                    <span class="text-terminal-warning">○</span>
+                    <span class="text-terminal-warning">[OFFLINE_MODE]</span>
+                  </span>
+                  <span class="text-terminal-warning/80">CACHED_DATA_ACTIVE</span>
+                </div>
+                <button class="btn-terminal px-2 py-1 font-mono text-sm">
+                  [RETRY_]
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- State: Error -->
+        <div>
+          <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">/// STATE: ERROR</p>
+          <div class="border-2 border-terminal-error bg-terminal-bg rounded-lg overflow-hidden">
+            <div class="border-b-2 border-terminal-error py-2 px-4">
+              <div class="flex items-center justify-between text-xs font-mono text-white">
+                <div class="flex items-center gap-6">
+                  <span class="flex items-center gap-2">
+                    <span class="text-terminal-error">✗</span>
+                    <span class="text-terminal-error animate-pulse">[CONNECTION_ERROR]</span>
+                  </span>
+                  <span class="text-terminal-error/80">API_UNREACHABLE</span>
+                </div>
+                <button class="btn-terminal px-2 py-1 font-mono text-sm">
+                  [RECONNECT_]
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 3: ARTICLE CARD -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-terminal mb-8">
+        <h2 class="font-mono text-2xl font-bold text-white">[04] ARTICLE_CARD</h2>
+        <p class="text-terminal-dim text-sm mt-1">Terminal-styled cards with ASCII borders</p>
+      </div>
+      
+      <!-- Featured Card -->
+      <div class="mb-10">
+        <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">/// VARIANT: FEATURED</p>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Default -->
+          <div>
+            <p class="text-xs text-gray-500 mb-2">[DEFAULT]</p>
+            <article class="border-terminal bg-terminal-bg rounded-lg overflow-hidden cursor-pointer card-terminal">
+              <div class="aspect-[21/9] bg-terminal-bg flex items-center justify-center border-b-2 border-terminal-dim relative overflow-hidden">
+                <div class="ascii-art text-6xl text-terminal-dim">
+    ╔════════════════════════╗
+    ║                        ║
+    ║      [IMAGE_PLACEHOLDER]     ║
+    ║                        ║
+    ╚════════════════════════╝
+                </div>
+                <div class="absolute top-3 left-3 px-2 py-1 bg-terminal-fg text-terminal-bg font-bold text-xs font-mono">
+                  [LIVE]
+                </div>
+              </div>
+              <div class="p-4">
+                <div class="flex items-center gap-3 mb-3">
+                  <span class="px-2 py-1 bg-terminal-dim text-terminal-fg text-xs font-bold border-terminal">[ESPORTS]</span>
+                  <span class="text-terminal-dim text-xs font-mono">5_MIN_AGO</span>
+                </div>
+                <h3 class="text-lg font-mono font-bold mb-2 text-white">
+                  &gt; Worlds 2024: T1 vs BLG — Grand Finals Breakdown
+                </h3>
+                <p class="text-terminal-dim text-sm mb-4">
+                  Complete analysis of most anticipated match in League of Legends history.
+                </p>
+                <div class="flex items-center justify-between border-t border-terminal-dim pt-3">
+                  <span class="text-terminal-dim text-sm">by <span class="text-terminal-accent">[LoL_Esports]</span></span>
+                  <span class="text-terminal-accent text-sm font-mono">[READ_MORE →]</span>
+                </div>
+              </div>
+            </article>
+          </div>
+          
+          <!-- Hover State -->
+          <div>
+            <p class="text-xs text-gray-500 mb-2">[HOVER]</p>
+            <article class="border-2 border-terminal-fg bg-terminal-bg rounded-lg overflow-hidden cursor-pointer card-terminal">
+              <div class="aspect-[21/9] bg-terminal-bg flex items-center justify-center border-b-2 border-terminal-fg relative">
+                <div class="ascii-art text-6xl text-terminal-accent text-glow">
+    ╔════════════════════════╗
+    ║                        ║
+    ║      [IMAGE_PLACEHOLDER]     ║
+    ║                        ║
+    ╚════════════════════════╝
+                </div>
+                <div class="absolute top-3 left-3 px-2 py-1 bg-terminal-fg text-terminal-bg font-bold text-xs font-mono">
+                  [LIVE]
+                </div>
+              </div>
+              <div class="p-4">
+                <div class="flex items-center gap-3 mb-3">
+                  <span class="px-2 py-1 bg-terminal-fg text-terminal-bg text-xs font-bold border-terminal">[ESPORTS]</span>
+                  <span class="text-terminal-accent text-xs font-mono animate-pulse">5_MIN_AGO</span>
+                </div>
+                <h3 class="text-lg font-mono font-bold mb-2 text-terminal-accent text-glow">
+                  &gt; Worlds 2024: T1 vs BLG — Grand Finals Breakdown
+                </h3>
+                <p class="text-white text-sm mb-4">
+                  Complete analysis of most anticipated match in League of Legends history.
+                </p>
+                <div class="flex items-center justify-between border-t-2 border-terminal-fg pt-3">
+                  <span class="text-white text-sm">by <span class="text-terminal-accent">[LoL_Esports]</span></span>
+                  <span class="text-terminal-accent text-sm font-mono">[READ_MORE →]</span>
+                </div>
+              </div>
+            </article>
+          </div>
+          
+          <!-- Loading Skeleton -->
+          <div>
+            <p class="text-xs text-gray-500 mb-2">[LOADING]</p>
+            <div class="border-terminal bg-terminal-bg rounded-lg overflow-hidden">
+              <div class="aspect-[21/9] skeleton-terminal"></div>
+              <div class="p-4 space-y-2">
+                <div class="ascii-art text-sm text-terminal-dim">
+    ══════════════════════════
+                </div>
+                <div class="h-4 skeleton-terminal"></div>
+                <div class="h-4 skeleton-terminal"></div>
+                <div class="h-4 skeleton-terminal"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Empty State -->
+          <div>
+            <p class="text-xs text-gray-500 mb-2">[EMPTY]</p>
+            <div class="border-terminal bg-terminal-bg rounded-lg overflow-hidden">
+              <div class="aspect-[21/9] bg-terminal-bg flex items-center justify-center">
+                <div class="ascii-art text-4xl text-terminal-dim text-center">
+    ╔════════════════════════╗
+    ║                        ║
+    ║    [NO_ARTICLES_FOUND]    ║
+    ║                        ║
+    ╚════════════════════════╝
+                </div>
+              </div>
+              <div class="p-4 text-center">
+                <p class="text-terminal-dim text-sm">_Check back soon for new content_</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Standard Card (Grid) -->
+      <div class="mb-10">
+        <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">/// VARIANT: STANDARD_GRID</p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Default -->
+          <article class="border-terminal bg-terminal-bg rounded-lg overflow-hidden cursor-pointer card-terminal">
+            <div class="aspect-video bg-terminal-bg flex items-center justify-center border-b-2 border-terminal-dim relative">
+              <div class="ascii-art text-3xl text-terminal-dim">
+    ╔═══════╗
+    ║        ║
+    ║ [IMG]  ║
+    ║        ║
+    ╚═══════╝
+              </div>
+            </div>
+            <div class="p-3">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="px-2 py-0.5 bg-terminal-dim text-terminal-fg text-[10px] font-bold border-terminal">[DEV]</span>
+                <span class="text-terminal-dim text-xs font-mono">2H</span>
+              </div>
+              <h3 class="font-mono font-semibold text-sm mb-1 text-white">
+                &gt; Dev Blog: Champion Mastery Rework
+              </h3>
+              <p class="text-terminal-dim text-xs truncate">Major changes to mastery system...</p>
+            </div>
+          </article>
+          
+          <!-- Hover -->
+          <article class="border-2 border-terminal-fg bg-terminal-bg rounded-lg overflow-hidden cursor-pointer card-terminal">
+            <div class="aspect-video bg-terminal-bg flex items-center justify-center border-b-2 border-terminal-fg">
+              <div class="ascii-art text-3xl text-terminal-accent text-glow">
+    ╔═══════╗
+    ║        ║
+    ║ [IMG]  ║
+    ║        ║
+    ╚═══════╝
+              </div>
+            </div>
+            <div class="p-3">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="px-2 py-0.5 bg-hextech text-terminal-bg text-[10px] font-bold border-terminal">[PATCH]</span>
+                <span class="text-terminal-accent text-xs font-mono animate-pulse">5H</span>
+              </div>
+              <h3 class="font-mono font-semibold text-sm mb-1 text-terminal-accent text-glow">
+                &gt; Patch 14.24 Preview: Arena Returns
+              </h3>
+              <p class="text-white text-xs truncate">The beloved 2v2v2v2 mode...</p>
+            </div>
+          </article>
+          
+          <!-- Loading -->
+          <div class="border-terminal bg-terminal-bg rounded-lg overflow-hidden">
+            <div class="aspect-video skeleton-terminal"></div>
+            <div class="p-3 space-y-1">
+              <div class="h-3 skeleton-terminal"></div>
+              <div class="h-3 skeleton-terminal"></div>
+              <div class="h-2 skeleton-terminal"></div>
+            </div>
+          </div>
+          
+          <!-- Empty -->
+          <div class="border-terminal bg-terminal-bg rounded-lg overflow-hidden">
+            <div class="aspect-video bg-terminal-bg flex items-center justify-center">
+              <div class="ascii-art text-2xl text-terminal-dim">
+    ╔═══════╗
+    ║        ║
+    ║ [NULL] ║
+    ╚═══════╝
+              </div>
+            </div>
+            <div class="p-3 text-center">
+              <p class="text-terminal-dim text-xs">_No article_</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Compact Card (List) -->
+      <div>
+        <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">/// VARIANT: COMPACT_LIST</p>
+        
+        <div class="space-y-2">
+          <!-- Default -->
+          <article class="border-terminal bg-terminal-bg rounded p-2 flex items-center gap-3 cursor-pointer card-terminal">
+            <div class="w-20 h-12 bg-terminal-bg flex-shrink-0 flex items-center justify-center border-terminal">
+              <div class="ascii-art text-xl text-terminal-dim">
+    ╔═════╗
+    ║      ║
+    ║ [IMG]║
+    ╚═════╝
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-1 py-0.5 bg-hextech text-terminal-bg text-[9px] font-bold border-terminal">[LORE]</span>
+                <span class="text-terminal-dim text-[10px] font-mono">8H_AGO</span>
+              </div>
+              <h3 class="font-mono font-semibold text-sm text-white truncate">
+                &gt; Exploring Runeterra: The Shadow Isles
+              </h3>
+              <p class="text-terminal-dim text-xs truncate">Deep dive into lore behind Ruination</p>
+            </div>
+            <div class="text-terminal-accent text-xs font-mono flex-shrink-0">→</div>
+          </article>
+          
+          <!-- Hover -->
+          <article class="border-2 border-terminal-fg bg-terminal-bg rounded p-2 flex items-center gap-3 cursor-pointer card-terminal">
+            <div class="w-20 h-12 bg-terminal-bg flex-shrink-0 flex items-center justify-center border-terminal">
+              <div class="ascii-art text-xl text-terminal-accent text-glow">
+    ╔═════╗
+    ║      ║
+    ║ [IMG]║
+    ╚═════╝
+              </div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-1 py-0.5 bg-hextech text-terminal-bg text-[9px] font-bold border-terminal">[MEDIA]</span>
+                <span class="text-terminal-accent text-[10px] font-mono animate-pulse">12H_AGO</span>
+              </div>
+              <h3 class="font-mono font-semibold text-sm text-terminal-accent text-glow truncate">
+                &gt; New K/DA Music Video Drops — "MORE" Remix
+              </h3>
+              <p class="text-white text-xs truncate">The virtual K-pop group returns...</p>
+            </div>
+            <div class="text-terminal-accent text-xs font-mono flex-shrink-0">→</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 4: CATEGORY FILTER PILLS -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-terminal mb-8">
+        <h2 class="font-mono text-2xl font-bold text-white">[05] CATEGORY_FILTER_PILLS</h2>
+        <p class="text-terminal-dim text-sm mt-1">Terminal-style filter buttons</p>
+      </div>
+      
+      <div class="space-y-6">
+        <div>
+          <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">/// ALL_STATES</p>
+          <div class="flex flex-wrap gap-3">
+            <!-- Active -->
+            <button class="btn-terminal px-4 py-2 font-mono text-sm bg-terminal-fg text-terminal-bg border-terminal">
+              [★ All_Feeds]
+            </button>
+            
+            <!-- Inactive -->
+            <button class="btn-terminal px-4 py-2 font-mono text-sm">
+              [○ Esports]
+            </button>
+            
+            <!-- Hover -->
+            <button class="btn-terminal px-4 py-2 font-mono text-sm hover:bg-terminal-fg hover:text-terminal-bg">
+              [● Dev_Updates]
+            </button>
+            
+            <!-- Disabled -->
+            <button class="btn-terminal px-4 py-2 font-mono text-sm" disabled>
+              [✗ Patches]
+            </button>
+          </div>
+        </div>
+        
+        <!-- Variants -->
+        <div class="grid md:grid-cols-3 gap-6">
+          <div>
+            <p class="text-xs text-gray-500 mb-3">[WITH_ICON]</p>
+            <div class="flex flex-wrap gap-2">
+              <button class="btn-terminal px-3 py-1.5 font-mono text-sm bg-terminal-fg text-terminal-bg border-terminal">
+                [● LoL]
+              </button>
+              <button class="btn-terminal px-3 py-1.5 font-mono text-sm">
+                [○ TFT]
+              </button>
+            </div>
+          </div>
+          
+          <div>
+            <p class="text-xs text-gray-500 mb-3">[TEXT_ONLY]</p>
+            <div class="flex flex-wrap gap-2">
+              <button class="btn-terminal px-3 py-1.5 font-mono text-sm bg-terminal-fg text-terminal-bg border-terminal">
+                [★ All]
+              </button>
+              <button class="btn-terminal px-3 py-1.5 font-mono text-sm">
+                [○ News]
+              </button>
+              <button class="btn-terminal px-3 py-1.5 font-mono text-sm">
+                [○ Updates]
+              </button>
+            </div>
+          </div>
+          
+          <div>
+            <p class="text-xs text-gray-500 mb-3">[WITH_COUNT]</p>
+            <div class="flex flex-wrap gap-2">
+              <button class="btn-terminal px-3 py-1.5 font-mono text-sm bg-terminal-fg text-terminal-bg border-terminal">
+                [★ All (1.2K)]
+              </button>
+              <button class="btn-terminal px-3 py-1.5 font-mono text-sm">
+                [○ Esports (342)]
+              </button>
+              <button class="btn-terminal px-3 py-1.5 font-mono text-sm">
+                [○ Dev (128)]
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- COMPONENT 5-15: COMPACT VERSION -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <section class="mb-20">
+      <div class="section-marker-terminal mb-8">
+        <h2 class="font-mono text-2xl font-bold text-white">[06-15] REMAINING_COMPONENTS</h2>
+        <p class="text-terminal-dim text-sm mt-1">All components with terminal aesthetic</p>
+      </div>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Locale Switcher -->
+        <div>
+          <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">[08] LOCALE</p>
+          <div class="inline-block">
+            <button class="btn-terminal px-3 py-2 font-mono text-sm">
+              [🇺🇸 EN ▼]
+            </button>
+            <div class="mt-4 border-terminal bg-terminal-bg p-2">
+              <button class="w-full text-left btn-terminal px-3 py-1 font-mono text-sm bg-terminal-fg text-terminal-bg mb-1">
+                [★ English (EN)]
+              </button>
+              <button class="w-full text-left btn-terminal px-3 py-1 font-mono text-sm mb-1">
+                [○ 한국어 (KO)]
+              </button>
+              <button class="w-full text-left btn-terminal px-3 py-1 font-mono text-sm mb-1">
+                [○ 日本語 (JP)]
+              </button>
+              <button class="w-full text-left btn-terminal px-3 py-1 font-mono text-sm">
+                [○ 中文 (ZH)]
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Search -->
+        <div>
+          <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">[09] SEARCH</p>
+          <div class="relative">
+            <input type="text" placeholder="_SEARCH_ARTICLES..." class="w-full bg-void/50 border-2 border-terminal-border px-4 py-2 text-sm text-terminal-fg placeholder-terminal-dim font-mono focus:outline-none focus:border-terminal-fg">
+            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-terminal-accent animate-pulse">█</span>
+          </div>
+          <div class="mt-3 border-terminal bg-terminal-bg p-3">
+            <p class="text-xs text-terminal-dim mb-2">/// SEARCH RESULTS:</p>
+            <div class="space-y-1 text-sm">
+              <div class="text-terminal-accent">[01] Faker breaks all-time record</div>
+              <div class="text-terminal-dim">    Esports • 2 hours ago</div>
+              <div class="text-terminal-accent">[02] T1 Faker interview</div>
+              <div class="text-terminal-dim">    Media • 1 day ago</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Buttons -->
+        <div class="md:col-span-2 lg:col-span-3">
+          <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">[12] BUTTONS_CTAS</p>
+          <div class="flex flex-wrap items-center gap-4">
+            <button class="btn-terminal px-4 py-2 font-mono text-sm bg-terminal-fg text-terminal-bg border-terminal text-glow">
+              [PRIMARY_]
+            </button>
+            <button class="btn-terminal px-4 py-2 font-mono text-sm">
+              [SECONDARY_]
+            </button>
+            <button class="btn-terminal px-4 py-2 font-mono text-sm">
+              [GHOST_]
+            </button>
+            <button class="btn-terminal px-4 py-2 font-mono text-sm bg-terminal-error text-terminal-bg border-terminal-error">
+              [DANGER_]
+            </button>
+            <button class="btn-terminal px-4 py-2 font-mono text-sm" disabled>
+              [DISABLED_]
+            </button>
+          </div>
+          <div class="mt-4 flex flex-wrap items-center gap-4">
+            <button class="btn-terminal px-2 py-1 font-mono text-xs bg-terminal-fg text-terminal-bg border-terminal">
+              [SM_]
+            </button>
+            <button class="btn-terminal px-4 py-2 font-mono text-sm bg-terminal-fg text-terminal-bg border-terminal">
+              [MD_]
+            </button>
+            <button class="btn-terminal px-6 py-2 font-mono text-base bg-terminal-fg text-terminal-bg border-terminal">
+              [LG_]
+            </button>
+          </div>
+        </div>
+        
+        <!-- Toast -->
+        <div>
+          <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">[13] TOAST</p>
+          <div class="space-y-3">
+            <div class="border-terminal bg-terminal-bg p-4 flex items-start gap-3">
+              <span class="text-terminal-accent text-xl">✓</span>
+              <div class="flex-1">
+                <p class="text-sm text-white font-mono">[SUCCESS] Article saved successfully</p>
+                <p class="text-xs text-terminal-dim mt-1">Added to your reading list</p>
+              </div>
+              <button class="text-terminal-dim hover:text-terminal-accent">[×]</button>
+            </div>
+            
+            <div class="border-2 border-terminal-warning bg-terminal-bg p-4 flex items-start gap-3">
+              <span class="text-terminal-warning text-xl">⚠</span>
+              <div class="flex-1">
+                <p class="text-sm text-white font-mono">[WARNING] Connection unstable</p>
+                <p class="text-xs text-terminal-dim mt-1">Some data may be outdated</p>
+              </div>
+              <button class="text-terminal-dim hover:text-terminal-warning">[×]</button>
+            </div>
+            
+            <div class="border-2 border-terminal-error bg-terminal-bg p-4 flex items-start gap-3">
+              <span class="text-terminal-error text-xl">✗</span>
+              <div class="flex-1">
+                <p class="text-sm text-white font-mono">[ERROR] Failed to load articles</p>
+                <p class="text-xs text-terminal-dim mt-1">Please check your connection</p>
+              </div>
+              <button class="text-terminal-dim hover:text-terminal-error">[×]</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Loading States -->
+        <div>
+          <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">[14] LOADING</p>
+          <div class="space-y-4">
+            <div class="border-terminal bg-terminal-bg p-6 text-center">
+              <div class="ascii-art text-sm text-terminal-dim mb-4">
+    ╔════════════════════╗
+    ║                      ║
+    ║   [LOADING_DATA...]   ║
+    ║   ████░░░░░░░░░░░░   ║
+    ║                      ║
+    ╚════════════════════╝
+              </div>
+              <div class="flex justify-center gap-1 mb-4">
+                <span class="w-2 h-2 bg-terminal-fg animate-bounce">█</span>
+                <span class="w-2 h-2 bg-terminal-fg animate-bounce" style="animation-delay: 0.15s">█</span>
+                <span class="w-2 h-2 bg-terminal-fg animate-bounce" style="animation-delay: 0.3s">█</span>
+              </div>
+              <p class="text-xs text-terminal-dim">Initializing Zaun connection...</p>
+            </div>
+            
+            <div class="border-terminal bg-terminal-bg p-4">
+              <p class="text-xs text-terminal-dim mb-2">/// PROGRESS:</p>
+              <div class="space-y-2">
+                <div class="h-2 bg-terminal-bg border-2 border-terminal-dim rounded-full overflow-hidden">
+                  <div class="h-full bg-terminal-fg rounded-full" style="width: 67%;"></div>
+                </div>
+                <p class="text-center text-terminal-accent text-xs font-mono">67%</p>
+              </div>
+            </div>
+            
+            <div class="border-terminal bg-terminal-bg p-4">
+              <p class="text-xs text-terminal-dim mb-2">/// SKELETON:</p>
+              <div class="space-y-2">
+                <div class="border-terminal p-2 skeleton-terminal"></div>
+                <div class="ascii-art text-xs text-terminal-dim">
+    ═════════════════════════
+                </div>
+                <div class="h-3 skeleton-terminal"></div>
+                <div class="h-3 skeleton-terminal"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mobile Responsive -->
+        <div class="md:col-span-2 lg:col-span-3">
+          <p class="text-xs font-mono text-terminal-dim mb-3 tracking-wider">[15] MOBILE_VIEW [375px]</p>
+          <div class="w-[375px] border-terminal bg-terminal-bg rounded-lg overflow-hidden">
+            <header class="border-b-2 border-terminal-border">
+              <div class="px-4 h-12 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-terminal-accent text-lg">&lt;/&gt;</span>
+                  <span class="font-mono font-bold text-sm text-white">LoLStonks</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="btn-terminal px-2 py-1 font-mono text-xs">[🔍]</button>
+                  <button class="btn-terminal px-2 py-1 font-mono text-xs">[☰]</button>
+                </div>
+              </div>
+            </header>
+            <div class="p-4">
+              <div class="ascii-art text-xs text-terminal-dim mb-4 text-center">
+    ╔════════════════════════╗
+    ║                        ║
+    ║   [CONTENT_AREA]        ║
+    ║                        ║
+    ╚════════════════════════╝
+              </div>
+              <p class="text-terminal-dim text-xs text-center">Mobile compact header with menu</p>
+            </div>
+            <nav class="border-t-2 border-terminal-border px-4 py-3">
+              <div class="flex items-center justify-around">
+                <button class="flex flex-col items-center gap-1">
+                  <span class="text-terminal-accent text-sm">[★]</span>
+                  <span class="text-[10px] text-white">Feed</span>
+                </button>
+                <button class="flex flex-col items-center gap-1">
+                  <span class="text-terminal-dim text-sm">[○]</span>
+                  <span class="text-[10px] text-terminal-dim">Search</span>
+                </button>
+                <button class="flex flex-col items-center gap-1">
+                  <span class="text-terminal-dim text-sm">[○]</span>
+                  <span class="text-[10px] text-terminal-dim">Saved</span>
+                </button>
+                <button class="flex flex-col items-center gap-1">
+                  <span class="text-terminal-dim text-sm">[○]</span>
+                  <span class="text-[10px] text-terminal-dim">Profile</span>
+                </button>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!-- FOOTER -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    
+    <footer class="mt-20 pt-8 border-t-2 border-terminal-border text-center">
+      <div class="ascii-art text-xs text-terminal-dim mb-4">
+    ╔══════════════════════════════╗
+    ║                                ║
+    ║      [LOLSTONKS_TERMINAL]     ║
+    ║      [HEXTECH_NEON_TERMINAL]    ║
+    ║                                ║
+    ╚══════════════════════════════╝
+      </div>
+      <p class="text-terminal-dim text-sm font-mono">
+        &lt;HEXTECH /&gt; Design System — <span class="text-terminal-accent">[NEON_TERMINAL]</span>
+      </p>
+      <p class="text-terminal-dim text-xs mt-2">
+        Variante C — Hacker/terminale style. Zaun terminal aesthetic.
+      </p>
+      <div class="mt-4 ascii-art text-xs text-terminal-dim">
+    ═══════════════════════════════════
+    ████  ░░░░░░░░░░░░░░░░░░░░░░░░
+    █████  ░░░░░░░░░░░░░░░░░░░░░
+    ██████  ░░░░░░░░░░░░░░░░░░░░
+    ███████  ░░░░░░░░░░░░░░░░░░░
+    ████████  ░░░░░░░░░░░░░░░░░░
+      </div>
+    </footer>
+    
+  </div>
+</body>
+</html>
