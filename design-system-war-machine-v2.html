@@ -3,16 +3,1529 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>War Machine v2 — Full Design System</title>
-  <style>body{font-family:sans-serif;background:#0a0e17;color:#f3f4f6;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:2rem;}</style>
+  <title>War Machine — Hybrid Design System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            void: '#0a0e17',
+            void2: '#111827',
+            void3: '#1a2332',
+            cyan: '#0AC8B9',
+            cyanLight: '#0EF5E0',
+            cyanDark: '#079B90',
+            crimson: '#C83030',
+            crimsonLight: '#EF4444',
+            crimsonDark: '#8B0000',
+            plasma: '#8B5CF6',
+            pulse: '#00FF88',
+            iron: '#2A2A2A',
+            steel: '#374151',
+          },
+          fontFamily: {
+            display: ['Orbitron', 'sans-serif'],
+            body: ['Rajdhani', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            'cyan-glow': '0 0 20px rgba(10, 200, 185, 0.5), 0 0 40px rgba(10, 200, 185, 0.3)',
+            'cyan-glow-sm': '0 0 10px rgba(10, 200, 185, 0.4)',
+            'red-glow': '0 0 20px rgba(200, 48, 48, 0.5), 0 0 40px rgba(200, 48, 48, 0.3)',
+            'red-glow-sm': '0 0 10px rgba(200, 48, 48, 0.4)',
+            'dual-glow': '0 0 20px rgba(10, 200, 185, 0.3), 0 0 40px rgba(200, 48, 48, 0.2)',
+          },
+          animation: {
+            'pulse-cyan': 'pulseCyan 2s ease-in-out infinite',
+            'pulse-red': 'pulseRed 2s ease-in-out infinite',
+            'scan-line': 'scanLine 3s linear infinite',
+            'glitch': 'glitch 0.3s ease-in-out infinite',
+          },
+          keyframes: {
+            pulseCyan: {
+              '0%, 100%': { boxShadow: '0 0 20px rgba(10, 200, 185, 0.5)' },
+              '50%': { boxShadow: '0 0 40px rgba(10, 200, 185, 0.8)' },
+            },
+            pulseRed: {
+              '0%, 100%': { boxShadow: '0 0 20px rgba(200, 48, 48, 0.5)' },
+              '50%': { boxShadow: '0 0 40px rgba(200, 48, 48, 0.8)' },
+            },
+            scanLine: {
+              '0%': { transform: 'translateY(-100%)' },
+              '100%': { transform: 'translateY(100%)' },
+            },
+            glitch: {
+              '0%, 100%': { transform: 'translate(0)' },
+              '20%': { transform: 'translate(-2px, 2px)' },
+              '40%': { transform: 'translate(-2px, -2px)' },
+              '60%': { transform: 'translate(2px, 2px)' },
+              '80%': { transform: 'translate(2px, -2px)' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    .gradient-border {
+      background: linear-gradient(135deg, #0AC8B9 0%, #C83030 100%);
+      padding: 1px;
+    }
+    .gradient-border > * {
+      background: #0a0e17;
+    }
+    .gradient-border-cyan-red {
+      border: 2px solid transparent;
+      background: linear-gradient(#0a0e17, #0a0e17) padding-box,
+                  linear-gradient(135deg, #0AC8B9, #C83030) border-box;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, #0AC8B9 0%, #C83030 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .scanline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(10, 200, 185, 0.5), transparent);
+      animation: scanLine 3s linear infinite;
+    }
+    .circuit-pattern {
+      background-image: 
+        linear-gradient(rgba(10, 200, 185, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 200, 185, 0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .noise {
+      position: relative;
+    }
+    .noise::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.02;
+      pointer-events: none;
+    }
+  </style>
 </head>
-<body>
-  <div>
-    <h1 style="color:#0AC8B9;font-size:2rem;">WAR MACHINE v2 — Design System</h1>
-    <p style="color:#9ca3af;margin:1rem 0;">The full 85KB design system HTML is too large for the GitHub API tool.</p>
-    <p style="color:#9ca3af;">View the complete file directly on GitHub:</p>
-    <p style="margin:2rem 0;"><a href="https://github.com/OneStepAt4time/lolstonks-mockups/blob/main/design-system-war-machine.html" style="color:#0AC8B9;">View War Machine v1 →</a></p>
-    <p style="color:#6b7280;font-size:0.75rem;">v2 will be uploaded manually or via CI.</p>
+<body class="bg-void text-gray-100 font-body min-h-screen circuit-pattern noise">
+  <div class="max-w-7xl mx-auto px-4 py-8">
+
+    <!-- ===================================================== -->
+    <!-- 1. HEADER/NAVBAR -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">01. Header / Navbar</h2>
+      
+      <!-- Default Header -->
+      <div class="mb-8">
+        <p class="text-sm text-gray-500 mb-3 font-mono">// Default state</p>
+        <header class="bg-void2/80 backdrop-blur-xl border-b border-steel/30 sticky top-0 z-50">
+          <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+              <!-- Logo -->
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 gradient-border-cyan-red rounded-lg flex items-center justify-center">
+                  <svg class="w-6 h-6 text-cyan" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                </div>
+                <span class="font-display font-bold text-xl tracking-wider text-gradient">WAR MACHINE</span>
+              </div>
+              
+              <!-- Nav Links -->
+              <nav class="hidden md:flex items-center gap-1">
+                <a href="#" class="px-4 py-2 text-cyan font-display font-semibold text-sm tracking-wide hover:text-cyanLight transition-colors relative group">
+                  NEWS
+                  <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan to-crimson group-hover:w-full transition-all"></span>
+                </a>
+                <a href="#" class="px-4 py-2 text-gray-400 font-display font-semibold text-sm tracking-wide hover:text-white transition-colors relative group">
+                  ESPORTS
+                  <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan to-crimson group-hover:w-full transition-all"></span>
+                </a>
+                <a href="#" class="px-4 py-2 text-gray-400 font-display font-semibold text-sm tracking-wide hover:text-white transition-colors relative group">
+                  GUIDES
+                  <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan to-crimson group-hover:w-full transition-all"></span>
+                </a>
+                <a href="#" class="px-4 py-2 text-gray-400 font-display font-semibold text-sm tracking-wide hover:text-white transition-colors relative group">
+                  TIERS
+                  <span class="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-cyan to-crimson group-hover:w-full transition-all"></span>
+                </a>
+              </nav>
+              
+              <!-- Right Actions -->
+              <div class="flex items-center gap-3">
+                <!-- Game Selector -->
+                <button class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-void3 border border-steel/50 rounded-lg hover:border-cyan/50 transition-colors group">
+                  <svg class="w-5 h-5 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  <span class="font-display text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">LoL</span>
+                  <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                
+                <!-- Search -->
+                <button class="p-2 text-gray-400 hover:text-cyan transition-colors">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                  </svg>
+                </button>
+                
+                <!-- Mobile Menu -->
+                <button class="md:hidden p-2 text-gray-400 hover:text-cyan transition-colors">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+      </div>
+
+      <!-- Scrolled Header -->
+      <div class="mb-8">
+        <p class="text-sm text-gray-500 mb-3 font-mono">// Scrolled state (compact)</p>
+        <header class="bg-void/95 backdrop-blur-xl border-b border-cyan/20 shadow-cyan-glow-sm">
+          <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-12">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-gradient-to-br from-cyan to-crimson rounded flex items-center justify-center">
+                  <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                  </svg>
+                </div>
+                <span class="font-display font-bold text-sm tracking-wider">WAR MACHINE</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="px-3 py-1 text-xs font-display font-semibold text-cyan">NEWS</button>
+                <button class="px-3 py-1 text-xs font-display text-gray-500">ESPORTS</button>
+                <button class="px-3 py-1 text-xs font-display text-gray-500">GUIDES</button>
+              </div>
+            </div>
+          </div>
+        </header>
+      </div>
+
+      <!-- Mobile Header -->
+      <div class="mb-8">
+        <p class="text-sm text-gray-500 mb-3 font-mono">// Mobile (375px)</p>
+        <div class="w-[375px] border border-steel/30 rounded-lg overflow-hidden">
+          <header class="bg-void2 border-b border-steel/30">
+            <div class="flex items-center justify-between px-4 h-14">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 gradient-border-cyan-red rounded flex items-center justify-center">
+                  <svg class="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                  </svg>
+                </div>
+                <span class="font-display font-bold text-sm text-gradient">WAR MACHINE</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="p-2 text-gray-400">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                  </svg>
+                </button>
+                <button class="p-2 text-gray-400">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </header>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 2. STATUS BAR -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">02. Status Bar</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Connected -->
+        <div class="bg-void2 border border-steel/30 rounded-lg p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Connected</p>
+          <div class="flex items-center gap-3 px-4 py-2 bg-void3/50 rounded-lg border border-pulse/30" aria-live="polite">
+            <div class="w-2 h-2 rounded-full bg-pulse animate-pulse shadow-[0_0_10px_rgba(0,255,136,0.5)]"></div>
+            <span class="font-mono text-sm text-pulse">LIVE — 12,847 players online</span>
+          </div>
+        </div>
+        
+        <!-- Syncing -->
+        <div class="bg-void2 border border-steel/30 rounded-lg p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Syncing</p>
+          <div class="flex items-center gap-3 px-4 py-2 bg-void3/50 rounded-lg border border-cyan/30" aria-live="polite">
+            <svg class="w-4 h-4 text-cyan animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="font-mono text-sm text-cyan">SYNCING DATA...</span>
+          </div>
+        </div>
+        
+        <!-- Offline -->
+        <div class="bg-void2 border border-steel/30 rounded-lg p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Offline</p>
+          <div class="flex items-center gap-3 px-4 py-2 bg-void3/50 rounded-lg border border-gray-600" aria-live="polite">
+            <div class="w-2 h-2 rounded-full bg-gray-500"></div>
+            <span class="font-mono text-sm text-gray-400">OFFLINE — Reconnecting...</span>
+          </div>
+        </div>
+        
+        <!-- Error -->
+        <div class="bg-void2 border border-steel/30 rounded-lg p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Error</p>
+          <div class="flex items-center gap-3 px-4 py-2 bg-crimson/10 rounded-lg border border-crimson/50" aria-live="polite">
+            <div class="w-2 h-2 rounded-full bg-crimson animate-pulse shadow-[0_0_10px_rgba(200,48,48,0.5)]"></div>
+            <span class="font-mono text-sm text-crimson">ERROR — API connection failed</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 3. ARTICLE CARD -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">03. Article Card</h2>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Featured -->
+        <div class="lg:col-span-2">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Featured</p>
+          <article class="group gradient-border-cyan-red rounded-xl overflow-hidden hover:shadow-dual-glow transition-shadow duration-300">
+            <div class="bg-void2 p-1">
+              <div class="relative aspect-video bg-gradient-to-br from-void3 to-void overflow-hidden">
+                <!-- Placeholder image -->
+                <div class="absolute inset-0 bg-gradient-to-br from-cyan/20 to-crimson/20"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <svg class="w-20 h-20 text-white/10" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                  </svg>
+                </div>
+                <!-- Category badge -->
+                <div class="absolute top-4 left-4">
+                  <span class="px-3 py-1 bg-crimson/90 text-white font-display font-bold text-xs tracking-wider rounded shadow-red-glow-sm">
+                    BREAKING
+                  </span>
+                </div>
+                <!-- Live indicator -->
+                <div class="absolute top-4 right-4 flex items-center gap-2 px-2 py-1 bg-void/80 backdrop-blur rounded">
+                  <div class="w-2 h-2 rounded-full bg-crimson animate-pulse"></div>
+                  <span class="font-mono text-xs text-crimson">LIVE</span>
+                </div>
+              </div>
+              <div class="p-6">
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="text-cyan font-mono text-xs">ESPORTS</span>
+                  <span class="text-gray-600">•</span>
+                  <span class="text-gray-500 font-mono text-xs">2 min ago</span>
+                </div>
+                <h3 class="font-display font-bold text-2xl mb-3 group-hover:text-cyan transition-colors">
+                  T1 Faker announces retirement after historic World Championship run
+                </h3>
+                <p class="text-gray-400 font-body leading-relaxed">
+                  The legendary mid-laner confirms his final season as professional player, ending a decade-long era of dominance...
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>
+        
+        <!-- Standard Cards -->
+        <div class="space-y-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Standard</p>
+          
+          <article class="group bg-void2 border border-steel/30 rounded-lg overflow-hidden hover:border-cyan/50 hover:shadow-cyan-glow-sm transition-all duration-300">
+            <div class="flex gap-4 p-4">
+              <div class="w-24 h-24 flex-shrink-0 bg-gradient-to-br from-void3 to-void rounded-lg overflow-hidden relative">
+                <div class="absolute inset-0 bg-cyan/10"></div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-cyan font-mono text-xs">GUIDE</span>
+                <h4 class="font-display font-semibold text-sm mt-1 group-hover:text-cyan transition-colors line-clamp-2">
+                  Best champions to climb in Patch 14.8
+                </h4>
+                <p class="text-gray-500 text-xs mt-2 font-mono">5 min read</p>
+              </div>
+            </div>
+          </article>
+          
+          <article class="group bg-void2 border border-steel/30 rounded-lg overflow-hidden hover:border-cyan/50 transition-all duration-300">
+            <div class="flex gap-4 p-4">
+              <div class="w-24 h-24 flex-shrink-0 bg-gradient-to-br from-void3 to-void rounded-lg overflow-hidden relative">
+                <div class="absolute inset-0 bg-crimson/10"></div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <span class="text-crimson font-mono text-xs">TIER LIST</span>
+                <h4 class="font-display font-semibold text-sm mt-1 group-hover:text-crimson transition-colors line-clamp-2">
+                  Mid Lane Tier List - Worlds 2024 Meta
+                </h4>
+                <p class="text-gray-500 text-xs mt-2 font-mono">3 min read</p>
+              </div>
+            </div>
+          </article>
+          
+          <!-- Compact -->
+          <p class="text-xs font-mono text-gray-500 mb-3 mt-6">// Compact</p>
+          <article class="group flex items-center gap-3 p-3 bg-void2/50 border border-steel/20 rounded-lg hover:bg-void2 hover:border-steel/40 transition-all">
+            <div class="w-10 h-10 bg-gradient-to-br from-cyan/20 to-crimson/20 rounded flex-shrink-0 flex items-center justify-center">
+              <svg class="w-5 h-5 text-cyan/50" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h5 class="font-display text-xs font-semibold truncate group-hover:text-cyan transition-colors">
+                Patch 14.9 notes preview
+              </h5>
+              <p class="text-gray-600 text-xs font-mono">1h ago</p>
+            </div>
+          </article>
+          
+          <!-- Loading state -->
+          <div class="flex items-center gap-3 p-3 bg-void2/50 border border-steel/20 rounded-lg animate-pulse">
+            <div class="w-10 h-10 bg-steel/30 rounded"></div>
+            <div class="flex-1">
+              <div class="h-3 bg-steel/30 rounded w-3/4 mb-2"></div>
+              <div class="h-2 bg-steel/20 rounded w-1/2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 4. CATEGORY FILTER PILLS -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">04. Category Filter Pills</h2>
+      
+      <div class="flex flex-wrap gap-3" role="tablist" aria-label="Category filters">
+        <!-- Active -->
+        <button class="px-5 py-2 bg-gradient-to-r from-cyan to-cyanDark text-void font-display font-bold text-sm tracking-wider rounded-full shadow-cyan-glow" role="tab" aria-selected="true">
+          ALL NEWS
+        </button>
+        
+        <!-- Active Crimson (urgent/action) -->
+        <button class="px-5 py-2 bg-gradient-to-r from-crimson to-crimsonDark text-white font-display font-bold text-sm tracking-wider rounded-full shadow-red-glow" role="tab" aria-selected="true">
+          LIVE UPDATES
+        </button>
+        
+        <!-- Inactive -->
+        <button class="px-5 py-2 bg-void3 text-gray-400 font-display font-semibold text-sm tracking-wider rounded-full border border-steel/50 hover:border-cyan/50 hover:text-cyan transition-all" role="tab" aria-selected="false">
+          ESPORTS
+        </button>
+        
+        <!-- Hover state preview -->
+        <button class="px-5 py-2 bg-void3 text-cyan font-display font-semibold text-sm tracking-wider rounded-full border border-cyan/50 shadow-cyan-glow-sm" role="tab" aria-selected="false">
+          GUIDES
+        </button>
+        
+        <!-- Disabled -->
+        <button class="px-5 py-2 bg-void3/50 text-gray-600 font-display font-semibold text-sm tracking-wider rounded-full border border-steel/20 cursor-not-allowed opacity-50" role="tab" aria-selected="false" aria-disabled="true">
+          COMING SOON
+        </button>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 5. SIDEBAR STATS PANEL -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">05. Sidebar Stats Panel</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Live -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-5">
+          <p class="text-xs font-mono text-gray-500 mb-4">// Live</p>
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="font-display font-semibold text-sm text-gray-300">SERVER STATUS</h4>
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-pulse animate-pulse shadow-[0_0_8px_rgba(0,255,136,0.6)]"></div>
+              <span class="font-mono text-xs text-pulse">ONLINE</span>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-500 text-sm">Players Online</span>
+              <span class="font-mono text-cyan font-semibold">847,291</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-500 text-sm">Games Active</span>
+              <span class="font-mono text-cyan font-semibold">42,847</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-500 text-sm">Queue Time</span>
+              <span class="font-mono text-pulse font-semibold">~12s</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Loading -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-5 animate-pulse">
+          <p class="text-xs font-mono text-gray-500 mb-4">// Loading</p>
+          <div class="flex items-center justify-between mb-4">
+            <div class="h-4 bg-steel/30 rounded w-24"></div>
+            <div class="h-3 bg-steel/30 rounded w-12"></div>
+          </div>
+          <div class="space-y-3">
+            <div class="h-3 bg-steel/30 rounded w-full"></div>
+            <div class="h-3 bg-steel/30 rounded w-3/4"></div>
+            <div class="h-3 bg-steel/30 rounded w-1/2"></div>
+          </div>
+        </div>
+        
+        <!-- Error -->
+        <div class="bg-void2 border border-crimson/30 rounded-xl p-5">
+          <p class="text-xs font-mono text-gray-500 mb-4">// Error</p>
+          <div class="text-center py-4">
+            <svg class="w-10 h-10 text-crimson mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <p class="font-mono text-sm text-crimson mb-2">CONNECTION FAILED</p>
+            <button class="text-xs text-gray-400 hover:text-cyan transition-colors">Retry →</button>
+          </div>
+        </div>
+        
+        <!-- Stale -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-5 opacity-60">
+          <p class="text-xs font-mono text-gray-500 mb-4">// Stale</p>
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="font-display font-semibold text-sm text-gray-400">LAST UPDATE</h4>
+            <span class="font-mono text-xs text-gray-500">15m ago</span>
+          </div>
+          <div class="space-y-3 opacity-50">
+            <div class="flex justify-between items-center">
+              <span class="text-gray-500 text-sm">Players Online</span>
+              <span class="font-mono text-gray-500 font-semibold">---,---</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-gray-500 text-sm">Games Active</span>
+              <span class="font-mono text-gray-500 font-semibold">--,---</span>
+            </div>
+          </div>
+          <button class="w-full mt-4 py-2 text-xs text-gray-500 border border-steel/30 rounded hover:border-cyan/50 hover:text-cyan transition-all">
+            Refresh Data
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 6. SIDEBAR CATEGORIES -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">06. Sidebar Categories</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Default -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Default</p>
+          <nav class="space-y-1">
+            <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-400 hover:bg-void3 hover:text-cyan transition-all">
+              <div class="flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span class="font-body text-sm">Patch Notes</span>
+              </div>
+              <span class="text-xs text-gray-600">24</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-400 hover:bg-void3 hover:text-cyan transition-all">
+              <div class="flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                <span class="font-body text-sm">Champion Stats</span>
+              </div>
+              <span class="text-xs text-gray-600">156</span>
+            </a>
+          </nav>
+        </div>
+        
+        <!-- Hover -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Hover</p>
+          <nav class="space-y-1">
+            <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-void3 text-cyan border-l-2 border-cyan shadow-cyan-glow-sm">
+              <div class="flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span class="font-body text-sm font-semibold">Patch Notes</span>
+              </div>
+              <span class="text-xs text-cyan">24</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-400 hover:bg-void3 hover:text-cyan transition-all">
+              <div class="flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                <span class="font-body text-sm">Champion Stats</span>
+              </div>
+              <span class="text-xs text-gray-600">156</span>
+            </a>
+          </nav>
+        </div>
+        
+        <!-- Selected -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Selected</p>
+          <nav class="space-y-1">
+            <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-gradient-to-r from-cyan/20 to-transparent text-cyan border-l-2 border-cyan">
+              <div class="flex items-center gap-3">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                <span class="font-body text-sm font-semibold">Patch Notes</span>
+              </div>
+              <span class="text-xs text-cyan font-semibold">24</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-gray-400">
+              <div class="flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                <span class="font-body text-sm">Champion Stats</span>
+              </div>
+              <span class="text-xs text-gray-600">156</span>
+            </a>
+          </nav>
+        </div>
+        
+        <!-- Empty -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Empty</p>
+          <div class="text-center py-8">
+            <svg class="w-10 h-10 text-gray-700 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414a1 1 0 00-.707-.293H4"/>
+            </svg>
+            <p class="text-gray-600 text-sm font-body">No categories found</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 7. SIDEBAR TRENDING -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">07. Sidebar Trending</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Default -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Default</p>
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-4 h-4 text-crimson" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.66 11.2C17.43 10.9 17.15 10.64 16.89 10.38C16.22 9.78 15.46 9.35 14.82 8.72C13.33 7.26 13 4.85 13.95 3C13 3.23 12.17 3.75 11.46 4.32C8.87 6.4 7.85 10.07 9.07 13.22C9.11 13.32 9.15 13.42 9.15 13.55C9.15 13.77 9 13.97 8.8 14.05C8.57 14.15 8.33 14.09 8.14 13.93C8.08 13.88 8.04 13.83 8 13.76C6.87 12.33 6.69 10.28 7.45 8.64C5.78 10 4.87 12.3 5 14.47C5.06 14.97 5.12 15.47 5.29 15.97C5.43 16.57 5.7 17.17 6 17.7C7.08 19.43 8.95 20.67 10.96 20.92C13.1 21.19 15.39 20.8 17.03 19.32C18.86 17.66 19.5 15 18.56 12.72L18.43 12.46C18.22 12 17.66 11.2 17.66 11.2Z"/>
+            </svg>
+            <h4 class="font-display font-semibold text-sm text-gray-300">TRENDING NOW</h4>
+          </div>
+          <div class="space-y-3">
+            <a href="#" class="group flex gap-3">
+              <span class="text-crimson font-display font-bold text-lg">01</span>
+              <div>
+                <p class="text-sm text-gray-300 group-hover:text-cyan transition-colors"> Worlds 2024 Finals venue announced</p>
+                <span class="text-xs text-gray-600 font-mono">2.4K views</span>
+              </div>
+            </a>
+            <a href="#" class="group flex gap-3">
+              <span class="text-crimson font-display font-bold text-lg">02</span>
+              <div>
+                <p class="text-sm text-gray-300 group-hover:text-cyan transition-colors"> New champion reveal: K'Sante</p>
+                <span class="text-xs text-gray-600 font-mono">1.8K views</span>
+              </div>
+            </a>
+            <a href="#" class="group flex gap-3">
+              <span class="text-gray-500 font-display font-bold text-lg">03</span>
+              <div>
+                <p class="text-sm text-gray-300 group-hover:text-cyan transition-colors"> MSI 2024 bracket draw results</p>
+                <span class="text-xs text-gray-600 font-mono">1.2K views</span>
+              </div>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Loading -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Loading</p>
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-4 h-4 bg-steel/30 rounded animate-pulse"></div>
+            <div class="h-4 bg-steel/30 rounded w-28 animate-pulse"></div>
+          </div>
+          <div class="space-y-3">
+            <div class="flex gap-3 animate-pulse">
+              <div class="w-6 h-6 bg-steel/30 rounded"></div>
+              <div class="flex-1">
+                <div class="h-3 bg-steel/30 rounded w-full mb-1"></div>
+                <div class="h-2 bg-steel/20 rounded w-1/2"></div>
+              </div>
+            </div>
+            <div class="flex gap-3 animate-pulse">
+              <div class="w-6 h-6 bg-steel/30 rounded"></div>
+              <div class="flex-1">
+                <div class="h-3 bg-steel/30 rounded w-3/4 mb-1"></div>
+                <div class="h-2 bg-steel/20 rounded w-1/3"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Empty -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Empty</p>
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.66 11.2C17.43 10.9 17.15 10.64 16.89 10.38C16.22 9.78 15.46 9.35 14.82 8.72C13.33 7.26 13 4.85 13.95 3C13 3.23 12.17 3.75 11.46 4.32C8.87 6.4 7.85 10.07 9.07 13.22C9.11 13.32 9.15 13.42 9.15 13.55C9.15 13.77 9 13.97 8.8 14.05C8.57 14.15 8.33 14.09 8.14 13.93C8.08 13.88 8.04 13.83 8 13.76C6.87 12.33 6.69 10.28 7.45 8.64C5.78 10 4.87 12.3 5 14.47C5.06 14.97 5.12 15.47 5.29 15.97C5.43 16.57 5.7 17.17 6 17.7C7.08 19.43 8.95 20.67 10.96 20.92C13.1 21.19 15.39 20.8 17.03 19.32C18.86 17.66 19.5 15 18.56 12.72L18.43 12.46C18.22 12 17.66 11.2 17.66 11.2Z"/>
+            </svg>
+            <h4 class="font-display font-semibold text-sm text-gray-500">TRENDING NOW</h4>
+          </div>
+          <div class="text-center py-6">
+            <p class="text-gray-600 text-sm">No trending articles</p>
+            <p class="text-gray-700 text-xs mt-1">Check back later</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 8. LOCALE SWITCHER -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">08. Locale Switcher</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Closed -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Closed</p>
+          <button class="flex items-center gap-2 px-3 py-2 bg-void3 border border-steel/50 rounded-lg hover:border-cyan/50 transition-colors">
+            <span class="text-lg">🇺🇸</span>
+            <span class="font-body text-sm text-gray-300">English</span>
+            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Open -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Open</p>
+          <div class="relative">
+            <button class="flex items-center gap-2 px-3 py-2 bg-void3 border border-cyan/50 rounded-lg shadow-cyan-glow-sm">
+              <span class="text-lg">🇺🇸</span>
+              <span class="font-body text-sm text-cyan">English</span>
+              <svg class="w-4 h-4 text-cyan rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div class="absolute top-full left-0 mt-2 w-full bg-void2 border border-steel/50 rounded-lg shadow-xl z-10" role="listbox" aria-label="Language selection">
+              <button class="w-full flex items-center gap-2 px-3 py-2 hover:bg-void3 transition-colors" role="option" aria-selected="true">
+                <span class="text-lg">🇺🇸</span>
+                <span class="font-body text-sm text-gray-300">English</span>
+                <svg class="w-4 h-4 text-cyan ml-auto" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+              </button>
+              <button class="w-full flex items-center gap-2 px-3 py-2 hover:bg-void3 transition-colors" role="option" aria-selected="false">
+                <span class="text-lg">🇮🇹</span>
+                <span class="font-body text-sm text-gray-300">Italiano</span>
+              </button>
+              <button class="w-full flex items-center gap-2 px-3 py-2 hover:bg-void3 transition-colors" role="option" aria-selected="false">
+                <span class="text-lg">🇪🇸</span>
+                <span class="font-body text-sm text-gray-300">Español</span>
+              </button>
+              <button class="w-full flex items-center gap-2 px-3 py-2 hover:bg-void3 transition-colors" role="option" aria-selected="false">
+                <span class="text-lg">🇩🇪</span>
+                <span class="font-body text-sm text-gray-300">Deutsch</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Loading -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Loading</p>
+          <button class="flex items-center gap-2 px-3 py-2 bg-void3 border border-steel/50 rounded-lg animate-pulse">
+            <div class="w-6 h-4 bg-steel/30 rounded"></div>
+            <div class="w-16 h-4 bg-steel/30 rounded"></div>
+            <div class="w-4 h-4 bg-steel/30 rounded"></div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 9. SEARCH -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">09. Search</h2>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <!-- Closed -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Closed</p>
+          <button class="flex items-center gap-3 px-4 py-2.5 bg-void3 border border-steel/30 rounded-lg hover:border-steel/50 transition-colors w-full max-w-md">
+            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <span class="text-gray-500 font-body text-sm">Search articles, champions...</span>
+            <kbd class="ml-auto px-2 py-0.5 bg-void border border-steel/50 rounded text-xs text-gray-500 font-mono">⌘K</kbd>
+          </button>
+        </div>
+        
+        <!-- Open + Typing -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Open + Typing</p>
+          <div class="w-full max-w-md">
+            <div class="flex items-center gap-3 px-4 py-2.5 bg-void3 border border-cyan/50 rounded-lg shadow-cyan-glow-sm">
+              <svg class="w-5 h-5 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+              <input type="text" value="yas" class="flex-1 bg-transparent text-white font-body text-sm outline-none placeholder-gray-500" placeholder="Search..." role="combobox" aria-expanded="true" aria-activedescendant="search-result-0" aria-autocomplete="list">
+              <kbd class="px-2 py-0.5 bg-void border border-steel/50 rounded text-xs text-gray-500 font-mono">ESC</kbd>
+            </div>
+            <!-- Results -->
+            <div class="mt-2 bg-void2 border border-steel/30 rounded-lg overflow-hidden" role="listbox" aria-label="Search results">
+              <div class="px-4 py-3 border-b border-steel/20">
+                <span class="text-xs text-gray-500 font-mono">CHAMPIONS</span>
+              </div>
+              <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-void3 transition-colors bg-cyan/5" role="option" aria-selected="true" id="search-result-0">
+                <div class="w-8 h-8 bg-gradient-to-br from-cyan/20 to-crimson/20 rounded-full"></div>
+                <div>
+                  <p class="text-sm text-white font-semibold">Yasuo</p>
+                  <p class="text-xs text-gray-500">The Unforgiven</p>
+                </div>
+                <svg class="w-4 h-4 text-cyan ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+              </a>
+              <a href="#" class="flex items-center gap-3 px-4 py-3 hover:bg-void3 transition-colors" role="option" aria-selected="false" id="search-result-1">
+                <div class="w-8 h-8 bg-gradient-to-br from-cyan/20 to-crimson/20 rounded-full"></div>
+                <div>
+                  <p class="text-sm text-gray-300">Yone</p>
+                  <p class="text-xs text-gray-500">The Unforgotten</p>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <!-- No Results -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// No Results</p>
+          <div class="w-full max-w-md">
+            <div class="flex items-center gap-3 px-4 py-2.5 bg-void3 border border-steel/30 rounded-lg">
+              <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+              <input type="text" value="xyzabc" class="flex-1 bg-transparent text-white font-body text-sm outline-none">
+            </div>
+            <div class="mt-2 bg-void2 border border-steel/30 rounded-lg p-6 text-center">
+              <svg class="w-10 h-10 text-gray-700 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <p class="text-gray-400 text-sm">No results for "<span class="text-gray-300">xyzabc</span>"</p>
+              <p class="text-gray-600 text-xs mt-1">Try different keywords</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 10. FOOTER -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">10. Footer</h2>
+      
+      <!-- Desktop 4-col -->
+      <div class="bg-void2 border border-steel/30 rounded-xl overflow-hidden mb-4">
+        <p class="text-xs font-mono text-gray-500 p-3 border-b border-steel/20">// Desktop 4-column</p>
+        <footer class="bg-void border-t border-steel/20">
+          <div class="max-w-7xl mx-auto px-8 py-12">
+            <div class="grid grid-cols-4 gap-8">
+              <!-- Brand -->
+              <div>
+                <div class="flex items-center gap-2 mb-4">
+                  <div class="w-8 h-8 gradient-border-cyan-red rounded flex items-center justify-center">
+                    <svg class="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    </svg>
+                  </div>
+                  <span class="font-display font-bold text-sm text-gradient">WAR MACHINE</span>
+                </div>
+                <p class="text-gray-500 text-sm font-body leading-relaxed">
+                  The ultimate war room for competitive League of Legends intelligence.
+                </p>
+              </div>
+              
+              <!-- Links 1 -->
+              <div>
+                <h5 class="font-display font-semibold text-sm text-gray-300 mb-4">CONTENT</h5>
+                <ul class="space-y-2">
+                  <li><a href="#" class="text-gray-500 text-sm hover:text-cyan transition-colors">Patch Notes</a></li>
+                  <li><a href="#" class="text-gray-500 text-sm hover:text-cyan transition-colors">Tier Lists</a></li>
+                  <li><a href="#" class="text-gray-500 text-sm hover:text-cyan transition-colors">Champions</a></li>
+                  <li><a href="#" class="text-gray-500 text-sm hover:text-cyan transition-colors">Pro Builds</a></li>
+                </ul>
+              </div>
+              
+              <!-- Links 2 -->
+              <div>
+                <h5 class="font-display font-semibold text-sm text-gray-300 mb-4">ESPORTS</h5>
+                <ul class="space-y-2">
+                  <li><a href="#" class="text-gray-500 text-sm hover:text-cyan transition-colors">Worlds 2024</a></li>
+                  <li><a href="#" class="text-gray-500 text-sm hover:text-cyan transition-colors">LCK</a></li>
+                  <li><a href="#" class="text-gray-500 text-sm hover:text-cyan transition-colors">LEC</a></li>
+                  <li><a href="#" class="text-gray-500 text-sm hover:text-cyan transition-colors">LCS</a></li>
+                </ul>
+              </div>
+              
+              <!-- Links 3 -->
+              <div>
+                <h5 class="font-display font-semibold text-sm text-gray-300 mb-4">CONNECT</h5>
+                <ul class="space-y-2">
+                  <li><a href="#" class="text-gray-500 text-sm hover:text-cyan transition-colors">Discord</a></li>
+                  <li><a href="#" class="text-gray-500 text-sm hover:text-cyan transition-colors">Twitter</a></li>
+                  <li><a href="#" class="text-gray-500 text-sm hover:text-cyan transition-colors">YouTube</a></li>
+                  <li><a href="#" class="text-gray-500 text-sm hover:text-cyan transition-colors">Twitch</a></li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="mt-12 pt-8 border-t border-steel/20 flex items-center justify-between">
+              <p class="text-gray-600 text-xs font-mono">© 2026 War Machine. All rights reserved.</p>
+              <div class="flex items-center gap-4">
+                <a href="#" class="text-gray-600 hover:text-cyan transition-colors">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                </a>
+                <a href="#" class="text-gray-600 hover:text-cyan transition-colors">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+      
+      <!-- Mobile 1-col -->
+      <div class="bg-void2 border border-steel/30 rounded-xl overflow-hidden">
+        <p class="text-xs font-mono text-gray-500 p-3 border-b border-steel/20">// Mobile 1-column (375px)</p>
+        <div class="w-[375px]">
+          <footer class="bg-void border-t border-steel/20 px-6 py-8">
+            <div class="flex items-center justify-center gap-2 mb-6">
+              <div class="w-8 h-8 gradient-border-cyan-red rounded flex items-center justify-center">
+                <svg class="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                </svg>
+              </div>
+              <span class="font-display font-bold text-sm text-gradient">WAR MACHINE</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <h5 class="font-display font-semibold text-xs text-gray-400 mb-2">CONTENT</h5>
+                <ul class="space-y-1.5">
+                  <li><a href="#" class="text-gray-500 text-xs hover:text-cyan transition-colors">Patch Notes</a></li>
+                  <li><a href="#" class="text-gray-500 text-xs hover:text-cyan transition-colors">Tier Lists</a></li>
+                  <li><a href="#" class="text-gray-500 text-xs hover:text-cyan transition-colors">Champions</a></li>
+                </ul>
+              </div>
+              <div>
+                <h5 class="font-display font-semibold text-xs text-gray-400 mb-2">ESPORTS</h5>
+                <ul class="space-y-1.5">
+                  <li><a href="#" class="text-gray-500 text-xs hover:text-cyan transition-colors">Worlds 2024</a></li>
+                  <li><a href="#" class="text-gray-500 text-xs hover:text-cyan transition-colors">LCK</a></li>
+                  <li><a href="#" class="text-gray-500 text-xs hover:text-cyan transition-colors">LEC</a></li>
+                </ul>
+              </div>
+            </div>
+            
+            <p class="text-center text-gray-700 text-xs font-mono">© 2026 War Machine</p>
+          </footer>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 11. ARTICLE DETAIL PAGE -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">11. Article Detail Page</h2>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- Loading -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Loading</p>
+          <div class="animate-pulse">
+            <div class="aspect-video bg-steel/20 rounded-lg mb-4"></div>
+            <div class="flex gap-2 mb-3">
+              <div class="h-4 bg-steel/20 rounded w-16"></div>
+              <div class="h-4 bg-steel/20 rounded w-12"></div>
+            </div>
+            <div class="h-6 bg-steel/20 rounded w-3/4 mb-3"></div>
+            <div class="space-y-2">
+              <div class="h-3 bg-steel/20 rounded w-full"></div>
+              <div class="h-3 bg-steel/20 rounded w-full"></div>
+              <div class="h-3 bg-steel/20 rounded w-2/3"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Loaded -->
+        <div class="lg:col-span-2 bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Loaded</p>
+          <article class="max-w-3xl">
+            <!-- Hero -->
+            <div class="aspect-video bg-gradient-to-br from-cyan/10 to-crimson/10 rounded-xl mb-6 relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-t from-void via-transparent to-transparent"></div>
+              <div class="absolute bottom-4 left-4 right-4">
+                <span class="px-3 py-1 bg-crimson/90 text-white font-display font-bold text-xs tracking-wider rounded">BREAKING</span>
+              </div>
+            </div>
+            
+            <!-- Meta -->
+            <div class="flex items-center gap-3 mb-4">
+              <span class="text-cyan font-mono text-xs">ESPORTS</span>
+              <span class="text-gray-600">•</span>
+              <span class="text-gray-500 font-mono text-xs">March 3, 2024</span>
+              <span class="text-gray-600">•</span>
+              <span class="text-gray-500 font-mono text-xs">8 min read</span>
+            </div>
+            
+            <!-- Title -->
+            <h1 class="font-display font-bold text-3xl mb-4 leading-tight">
+              T1 Faker announces retirement after historic World Championship run
+            </h1>
+            
+            <!-- Author -->
+            <div class="flex items-center gap-3 mb-6 pb-6 border-b border-steel/20">
+              <div class="w-10 h-10 bg-gradient-to-br from-cyan to-crimson rounded-full"></div>
+              <div>
+                <p class="font-semibold text-sm text-gray-200">John Smith</p>
+                <p class="text-gray-500 text-xs">Senior Esports Writer</p>
+              </div>
+            </div>
+            
+            <!-- Content -->
+            <div class="prose prose-invert max-w-none">
+              <p class="text-gray-300 leading-relaxed mb-4">
+                The legendary mid-laner, widely considered the greatest League of Legends player of all time, has confirmed that the 2024 season will be his final run as a professional player...
+              </p>
+            </div>
+          </article>
+        </div>
+        
+        <!-- Error -->
+        <div class="bg-void2 border border-crimson/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Error</p>
+          <div class="text-center py-12">
+            <svg class="w-16 h-16 text-crimson mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <h3 class="font-display font-bold text-lg text-crimson mb-2">ARTICLE NOT FOUND</h3>
+            <p class="text-gray-500 text-sm mb-4">The article you're looking for doesn't exist or has been removed.</p>
+            <button class="px-6 py-2 bg-crimson/20 border border-crimson/50 text-crimson font-display font-semibold text-sm rounded-lg hover:bg-crimson/30 transition-colors">
+              Go Back
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 12. BUTTONS & CTAs -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">12. Buttons & CTAs</h2>
+      
+      <div class="space-y-8">
+        <!-- Primary -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-6">
+          <p class="text-xs font-mono text-gray-500 mb-4">// Primary</p>
+          <div class="flex flex-wrap items-center gap-4">
+            <button class="px-6 py-3 bg-gradient-to-r from-cyan to-cyanDark text-void font-display font-bold text-sm tracking-wider rounded-lg shadow-cyan-glow hover:shadow-[0_0_30px_rgba(10,200,185,0.6)] transition-shadow">
+              PRIMARY ACTION
+            </button>
+            <button class="px-5 py-2.5 bg-gradient-to-r from-cyan to-cyanDark text-void font-display font-semibold text-sm tracking-wider rounded-lg">
+              Medium
+            </button>
+            <button class="px-4 py-2 bg-gradient-to-r from-cyan to-cyanDark text-void font-display font-semibold text-xs tracking-wider rounded">
+              Small
+            </button>
+            <button class="px-6 py-3 bg-gradient-to-r from-cyan to-cyanDark text-void font-display font-bold text-sm tracking-wider rounded-lg opacity-50 cursor-not-allowed">
+              Disabled
+            </button>
+          </div>
+        </div>
+        
+        <!-- Danger -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-6">
+          <p class="text-xs font-mono text-gray-500 mb-4">// Danger</p>
+          <div class="flex flex-wrap items-center gap-4">
+            <button class="px-6 py-3 bg-gradient-to-r from-crimson to-crimsonDark text-white font-display font-bold text-sm tracking-wider rounded-lg shadow-red-glow hover:shadow-[0_0_30px_rgba(200,48,48,0.6)] transition-shadow">
+              DANGER ACTION
+            </button>
+            <button class="px-5 py-2.5 bg-gradient-to-r from-crimson to-crimsonDark text-white font-display font-semibold text-sm tracking-wider rounded-lg">
+              Medium
+            </button>
+            <button class="px-4 py-2 bg-gradient-to-r from-crimson to-crimsonDark text-white font-display font-semibold text-xs tracking-wider rounded">
+              Small
+            </button>
+            <button class="px-6 py-3 bg-gradient-to-r from-crimson to-crimsonDark text-white font-display font-bold text-sm tracking-wider rounded-lg animate-pulse-red">
+              Urgent
+            </button>
+          </div>
+        </div>
+        
+        <!-- Secondary -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-6">
+          <p class="text-xs font-mono text-gray-500 mb-4">// Secondary</p>
+          <div class="flex flex-wrap items-center gap-4">
+            <button class="px-6 py-3 bg-void3 text-gray-300 font-display font-bold text-sm tracking-wider rounded-lg border border-steel/50 hover:border-cyan/50 hover:text-cyan transition-all">
+              SECONDARY
+            </button>
+            <button class="px-5 py-2.5 bg-void3 text-gray-300 font-display font-semibold text-sm tracking-wider rounded-lg border border-steel/50 hover:border-cyan/50 hover:text-cyan transition-all">
+              Medium
+            </button>
+            <button class="px-4 py-2 bg-void3 text-gray-300 font-display font-semibold text-xs tracking-wider rounded border border-steel/50 hover:border-cyan/50 hover:text-cyan transition-all">
+              Small
+            </button>
+          </div>
+        </div>
+        
+        <!-- Ghost -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-6">
+          <p class="text-xs font-mono text-gray-500 mb-4">// Ghost</p>
+          <div class="flex flex-wrap items-center gap-4">
+            <button class="px-6 py-3 text-cyan font-display font-bold text-sm tracking-wider hover:bg-cyan/10 rounded-lg transition-colors">
+              GHOST BUTTON
+            </button>
+            <button class="px-5 py-2.5 text-gray-400 font-display font-semibold text-sm tracking-wider hover:text-white hover:bg-white/5 rounded-lg transition-colors">
+              Ghost Gray
+            </button>
+            <button class="px-4 py-2 text-crimson font-display font-semibold text-xs tracking-wider hover:bg-crimson/10 rounded transition-colors">
+              Ghost Red
+            </button>
+          </div>
+        </div>
+        
+        <!-- Dual Gradient -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-6">
+          <p class="text-xs font-mono text-gray-500 mb-4">// Dual Gradient (Special)</p>
+          <div class="flex flex-wrap items-center gap-4">
+            <button class="px-8 py-3 bg-gradient-to-r from-cyan via-plasma to-crimson text-white font-display font-bold text-sm tracking-wider rounded-lg shadow-dual-glow hover:scale-105 transition-transform">
+              ELITE CTA
+            </button>
+            <button class="gradient-border rounded-lg">
+              <span class="block px-8 py-3 bg-void text-white font-display font-bold text-sm tracking-wider rounded-lg">
+                BORDER GRADIENT
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 13. TOAST / NOTIFICATION -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">13. Toast / Notification</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Success -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Success</p>
+          <div class="flex items-start gap-3 p-4 bg-pulse/10 border border-pulse/30 rounded-lg">
+            <div class="w-6 h-6 rounded-full bg-pulse/20 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="font-display font-semibold text-sm text-pulse">SUCCESS</p>
+              <p class="text-gray-400 text-sm mt-1">Your changes have been saved successfully.</p>
+            </div>
+            <button class="text-gray-500 hover:text-gray-300 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Warning -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Warning</p>
+          <div class="flex items-start gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+            <div class="w-6 h-6 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="font-display font-semibold text-sm text-yellow-500">WARNING</p>
+              <p class="text-gray-400 text-sm mt-1">Server maintenance scheduled in 30 minutes.</p>
+            </div>
+            <button class="text-gray-500 hover:text-gray-300 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Error -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Error</p>
+          <div class="flex items-start gap-3 p-4 bg-crimson/10 border border-crimson/30 rounded-lg shadow-red-glow-sm">
+            <div class="w-6 h-6 rounded-full bg-crimson/20 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-crimson" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="font-display font-semibold text-sm text-crimson">ERROR</p>
+              <p class="text-gray-400 text-sm mt-1">Failed to save changes. Please try again.</p>
+            </div>
+            <button class="text-gray-500 hover:text-gray-300 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Info -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Info</p>
+          <div class="flex items-start gap-3 p-4 bg-cyan/10 border border-cyan/30 rounded-lg shadow-cyan-glow-sm">
+            <div class="w-6 h-6 rounded-full bg-cyan/20 flex items-center justify-center flex-shrink-0">
+              <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <p class="font-display font-semibold text-sm text-cyan">INFO</p>
+              <p class="text-gray-400 text-sm mt-1">New patch notes are available. Check them out!</p>
+            </div>
+            <button class="text-gray-500 hover:text-gray-300 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 14. LOADING STATES -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">14. Loading States</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Skeleton -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Skeleton</p>
+          <div class="animate-pulse space-y-3">
+            <div class="h-32 bg-steel/20 rounded-lg"></div>
+            <div class="h-4 bg-steel/20 rounded w-3/4"></div>
+            <div class="h-3 bg-steel/20 rounded w-1/2"></div>
+            <div class="flex gap-2">
+              <div class="h-6 w-16 bg-steel/20 rounded-full"></div>
+              <div class="h-6 w-12 bg-steel/20 rounded-full"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Spinner -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Spinner</p>
+          <div class="flex flex-col items-center justify-center py-8">
+            <div class="relative">
+              <div class="w-12 h-12 border-2 border-steel/30 rounded-full"></div>
+              <div class="absolute top-0 left-0 w-12 h-12 border-2 border-cyan border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <p class="mt-4 font-mono text-xs text-gray-500">Loading data...</p>
+          </div>
+        </div>
+        
+        <!-- Progress -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Progress</p>
+          <div class="py-4">
+            <div class="flex justify-between mb-2">
+              <span class="font-mono text-xs text-gray-400">Downloading patch...</span>
+              <span class="font-mono text-xs text-cyan">67%</span>
+            </div>
+            <div class="h-2 bg-void3 rounded-full overflow-hidden">
+              <div class="h-full w-2/3 bg-gradient-to-r from-cyan to-crimson rounded-full relative">
+                <div class="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-r from-transparent to-white/30 animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Pulse -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Pulse</p>
+          <div class="flex items-center justify-center py-8">
+            <div class="relative">
+              <div class="w-12 h-12 bg-cyan/20 rounded-full animate-ping"></div>
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-cyan/30 rounded-full animate-pulse"></div>
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-cyan rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- 15. MOBILE RESPONSIVE VIEWS -->
+    <!-- ===================================================== -->
+    <section class="mb-16">
+      <h2 class="font-display text-2xl mb-6 text-gradient">15. Mobile Responsive Views (375px)</h2>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Mobile Header -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Mobile Header</p>
+          <div class="w-[375px] bg-void border border-steel/20 rounded-lg overflow-hidden">
+            <!-- Header -->
+            <div class="bg-void2 border-b border-steel/20 px-4 py-3 flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 gradient-border-cyan-red rounded flex items-center justify-center">
+                  <svg class="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                  </svg>
+                </div>
+                <span class="font-display font-bold text-sm text-gradient">WAR MACHINE</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button class="p-2 text-gray-400">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                  </svg>
+                </button>
+                <button class="p-2 text-gray-400">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Pills -->
+            <div class="px-4 py-3 flex gap-2 overflow-x-auto border-b border-steel/20">
+              role="tablist" aria-label="Content filters"
+              <button class="px-4 py-1.5 bg-gradient-to-r from-cyan to-cyanDark text-void font-display font-bold text-xs rounded-full whitespace-nowrap"> role="tab" aria-selected="true" 
+                ALL
+              </button>
+              <button class="px-4 py-1.5 bg-void3 text-gray-400 font-display text-xs rounded-full whitespace-nowrap border border-steel/30"> role="tab" aria-selected="false" 
+                ESPORTS
+              </button>
+              <button class="px-4 py-1.5 bg-void3 text-gray-400 font-display text-xs rounded-full whitespace-nowrap border border-steel/30"> role="tab" aria-selected="false" 
+                GUIDES
+              </button>
+              <button class="px-4 py-1.5 bg-void3 text-gray-400 font-display text-xs rounded-full whitespace-nowrap border border-steel/30"> role="tab" aria-selected="false" 
+                TIERS
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mobile Cards -->
+        <div class="bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Mobile Cards</p>
+          <div class="w-[375px] bg-void border border-steel/20 rounded-lg overflow-hidden p-3 space-y-3">
+            <!-- Featured Card Mobile -->
+            <div class="bg-void2 border border-steel/30 rounded-lg overflow-hidden">
+              <div class="aspect-video bg-gradient-to-br from-cyan/10 to-crimson/10 relative">
+                <span class="absolute top-2 left-2 px-2 py-0.5 bg-crimson/90 text-white font-display font-bold text-[10px] rounded">BREAKING</span>
+              </div>
+              <div class="p-3">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-cyan font-mono text-[10px]">ESPORTS</span>
+                  <span class="text-gray-600 text-[10px]">2m ago</span>
+                </div>
+                <h3 class="font-display font-semibold text-sm leading-tight">T1 Faker announces retirement</h3>
+              </div>
+            </div>
+            
+            <!-- Standard Card Mobile -->
+            <div class="bg-void2/50 border border-steel/20 rounded-lg p-3 flex gap-3">
+              <div class="w-16 h-16 bg-gradient-to-br from-void3 to-void rounded flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <span class="text-cyan font-mono text-[10px]">GUIDE</span>
+                <h4 class="font-display font-semibold text-xs mt-0.5 line-clamp-2">Best champions to climb in Patch 14.8</h4>
+                <p class="text-gray-600 text-[10px] mt-1 font-mono">5 min read</p>
+              </div>
+            </div>
+            
+            <!-- Compact Card Mobile -->
+            <div class="flex items-center gap-3 p-2.5 bg-void2/30 border border-steel/10 rounded-lg">
+              <div class="w-8 h-8 bg-gradient-to-br from-cyan/20 to-crimson/20 rounded flex-shrink-0"></div>
+              <div class="flex-1 min-w-0">
+                <h5 class="font-display text-[11px] font-semibold truncate">Patch 14.9 notes preview</h5>
+                <p class="text-gray-600 text-[10px] font-mono">1h ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mobile Bottom Nav -->
+        <div class="lg:col-span-2 bg-void2 border border-steel/30 rounded-xl p-4">
+          <p class="text-xs font-mono text-gray-500 mb-3">// Mobile Bottom Navigation</p>
+          <div class="w-[375px] bg-void border border-steel/20 rounded-lg overflow-hidden">
+            <!-- Content placeholder -->
+            <div class="h-48 bg-gradient-to-b from-void2 to-void flex items-center justify-center">
+              <span class="text-gray-700 font-mono text-xs">Content area</span>
+            </div>
+            
+            <!-- Bottom Nav -->
+            <nav class="bg-void2 border-t border-steel/20 px-2 py-2">
+              <div class="flex items-center justify-around">
+                <button class="flex flex-col items-center gap-1 px-4 py-2 text-cyan">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                  </svg>
+                  <span class="font-display text-[10px] font-semibold">HOME</span>
+                </button>
+                <button class="flex flex-col items-center gap-1 px-4 py-2 text-gray-500">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                  </svg>
+                  <span class="font-display text-[10px]">SEARCH</span>
+                </button>
+                <button class="flex flex-col items-center gap-1 px-4 py-2 text-gray-500">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  </svg>
+                  <span class="font-display text-[10px]">LIVE</span>
+                </button>
+                <button class="flex flex-col items-center gap-1 px-4 py-2 text-gray-500 relative">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                  </svg>
+                  <span class="font-display text-[10px]">ALERTS</span>
+                  <div class="absolute top-1 right-3 w-2 h-2 bg-crimson rounded-full animate-pulse"></div>
+                </button>
+                <button class="flex flex-col items-center gap-1 px-4 py-2 text-gray-500">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  </svg>
+                  <span class="font-display text-[10px]">PROFILE</span>
+                </button>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-20 pt-8 border-t border-steel/20 text-center">
+      <p class="font-display text-sm text-gradient font-bold">WAR MACHINE DESIGN SYSTEM</p>
+      <p class="text-gray-600 text-xs font-mono mt-2">Hextech × Noxus Hybrid — Variant 1</p>
+    </footer>
+
   </div>
+
+<script>
+  // ACCESSIBILITY: Arrow Key Navigation for ARIA widgets
+  document.addEventListener('DOMContentLoaded', () => {
+    // ===== Arrow key navigation for [role="tablist"] =====
+    document.addEventListener('keydown', (e) => {
+      const focused = document.activeElement;
+      
+      // Handle tabs
+      if (focused && focused.getAttribute('role') === 'tab') {
+        const tablist = focused.closest('[role="tablist"]');
+        if (!tablist) return;
+        
+        const tabs = Array.from(tablist.querySelectorAll('[role="tab"]'));
+        const currentIndex = tabs.indexOf(focused);
+        let nextIndex;
+        
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          nextIndex = (currentIndex + 1) % tabs.length; // Wrap around
+          tabs[nextIndex].focus();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          nextIndex = (currentIndex - 1 + tabs.length) % tabs.length; // Wrap around
+          tabs[nextIndex].focus();
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          tabs[0].focus();
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          tabs[tabs.length - 1].focus();
+        }
+      }
+      
+      // Handle listbox options
+      if (focused && (focused.getAttribute('role') === 'option' || (focused.tagName === 'INPUT' && focused.closest('[role="listbox"]')))) {
+        const listbox = focused.getAttribute('role') === 'listbox' ? focused : focused.closest('[role="listbox"]');
+        if (!listbox) return;
+        
+        const options = Array.from(listbox.querySelectorAll('[role="option"]'));
+        if (options.length === 0) return;
+        
+        let currentIndex = options.findIndex(opt => opt === focused);
+        if (currentIndex === -1) currentIndex = 0;
+        
+        let nextIndex;
+        
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          nextIndex = (currentIndex + 1) % options.length;
+          options[nextIndex].focus();
+          // Update aria-activedescendant on input
+          const input = listbox.parentElement?.querySelector('input[aria-activedescendant]');
+          if (input) input.setAttribute('aria-activedescendant', 'search-result-' + nextIndex);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          nextIndex = (currentIndex - 1 + options.length) % options.length;
+          options[nextIndex].focus();
+          const input = listbox.parentElement?.querySelector('input[aria-activedescendant]');
+          if (input) input.setAttribute('aria-activedescendant', 'search-result-' + nextIndex);
+        } else if (e.key === 'Enter' && focused.getAttribute('role') === 'option') {
+          e.preventDefault();
+          focused.click();
+        }
+      }
+    });
+
+    // Add aria-pressed to toggle buttons
+    document.querySelectorAll('.btn-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const isPressed = btn.getAttribute('aria-pressed') === 'true';
+        btn.setAttribute('aria-pressed', !isPressed);
+      });
+    });
+  });
+</script>
 </body>
 </html>
